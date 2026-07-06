@@ -18,7 +18,7 @@ Total time: ~10 minutes, no credit card required.
 
 1. Go to <https://vercel.com> → **Add New… → Project** → **Import Git Repository**.
 2. Choose **`elwanimarwa20-wq/outsourced-hiring-management`**.
-3. **Root Directory:** set to **`app`** (the Next.js app lives in the `app/` subfolder).
+3. **Root Directory:** leave as the repo root (`./`) — the Next.js app is at the root, so Vercel detects it automatically.
 4. Add the **Environment Variables** below, then click **Deploy**.
 
 Vercel automatically runs `prisma migrate deploy && next build` (the `vercel-build`
@@ -45,7 +45,7 @@ machine against the Neon database:
 
 ```bash
 git clone https://github.com/elwanimarwa20-wq/outsourced-hiring-management
-cd outsourced-hiring-management/app
+cd outsourced-hiring-management
 npm ci
 DATABASE_URL="<your-neon-url>" npm run db:seed
 ```
