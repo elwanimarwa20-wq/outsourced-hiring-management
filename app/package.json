@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "postinstall": "prisma generate",
+    "vercel-build": "prisma migrate deploy && next build",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.mjs",
     "test:e2e": "node tests/e2e-smoke.mjs"
@@ -37,6 +39,7 @@
     "eslint-config-next": "16.2.10",
     "playwright": "^1.61.1",
     "tailwindcss": "^4",
+    "tsx": "^4.23.0",
     "typescript": "^5"
   }
 }

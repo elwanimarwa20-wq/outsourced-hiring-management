@@ -19,7 +19,17 @@ Built from the [Solution Architecture Document](../project/Solution%20Architectu
 - **Bilingual** — EN/AR toggle flips the whole UI to RTL, including option labels.
 - **Auditable** — every create/edit/approval recorded; computed totals guaranteed by the database.
 
-## Quick start
+## Get a live URL (deploy)
+
+GitHub only hosts the code. To get a public link you can open in a browser, deploy to
+**Vercel** + a free **Neon** PostgreSQL — full steps in [`docs/DEPLOY.md`](docs/DEPLOY.md).
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/elwanimarwa20-wq/outsourced-hiring-management&root-directory=app&env=DATABASE_URL,AUTH_SECRET,NEXTAUTH_URL,ENABLE_DEV_LOGIN)
+
+> When importing, set **Root Directory = `app`**. With `ENABLE_DEV_LOGIN=true` you can
+> sign in via the role picker and test immediately (no SSO setup needed).
+
+## Quick start (local)
 
 ```bash
 # PostgreSQL 16 must be running and reachable via DATABASE_URL / RUNTIME_DATABASE_URL (.env)
