@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+:root {
+  /* Brand */
+  --maroon: #7c1733;
+  --maroon-light: #a6304f;
+  --gold: #9e7b2f;
+  --gold-light: #c7a24a;
+  --gold-hover: #8c6b26;
+  --gold-bg: #fbf6ea;
+  --gold-hover-bg: #f3ecdc;
+  --gold-border: #ede2c7;
+  --on-maroon-gold: #ffe6b0;
+
+  /* Surfaces */
+  --page-bg: #f2f0e9;
+  --desk-bg: #e9e6dd;
+  --surface: #ffffff;
+  --surface-subtle: #fbfaf6;
+  --surface-subtle-2: #f8f6f0;
+
+  /* Borders */
+  --border: #e6e1d4;
+  --border-btn: #d9d3c2;
+  --border-inner: #f0ede3;
+
+  /* Text */
+  --text-primary: #23211c;
+  --text-body: #332f28;
+  --text-label: #4a463c;
+  --text-label-2: #6b6657;
+  --text-muted: #8c877a;
+  --text-faint: #a8a293;
+
+  /* Status */
+  --success: #2f6b4f;
+  --success-hover: #255b41;
+  --success-tint: #e4efe8;
+  --success-tint-border: #bfd9c9;
+  --warning: #9a6b16;
+  --warning-tint: #f6ecd6;
+  --danger: #b22234;
+  --danger-dark: #8b1a1a;
+  --danger-tint: #fdeaea;
+  --danger-border: #f5c0c0;
+}
+
+@theme inline {
+  --color-maroon: var(--maroon);
+  --color-maroon-light: var(--maroon-light);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-hover: var(--gold-hover);
+  --color-gold-bg: var(--gold-bg);
+  --color-gold-hover-bg: var(--gold-hover-bg);
+  --color-gold-border: var(--gold-border);
+  --color-page-bg: var(--page-bg);
+  --color-desk-bg: var(--desk-bg);
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-subtle-2: var(--surface-subtle-2);
+  --color-border: var(--border);
+  --color-border-btn: var(--border-btn);
+  --color-border-inner: var(--border-inner);
+  --color-text-primary: var(--text-primary);
+  --color-text-body: var(--text-body);
+  --color-text-label: var(--text-label);
+  --color-text-label-2: var(--text-label-2);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+  --color-success: var(--success);
+  --color-success-hover: var(--success-hover);
+  --color-success-tint: var(--success-tint);
+  --color-warning: var(--warning);
+  --color-warning-tint: var(--warning-tint);
+  --color-danger: var(--danger);
+  --color-danger-dark: var(--danger-dark);
+  --color-danger-tint: var(--danger-tint);
+  --font-sans: "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-arabic: "IBM Plex Sans Arabic", "IBM Plex Sans", system-ui, sans-serif;
+}
+
+html[dir="rtl"] body {
+  font-family: var(--font-arabic);
+}
+
+body {
+  background: var(--page-bg);
+  color: var(--text-body);
+  font-family: var(--font-sans);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

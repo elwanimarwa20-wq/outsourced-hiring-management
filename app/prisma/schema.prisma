@@ -1,0 +1,296 @@
+// Outsourced & Service Contract Hiring Management System
+// Postgres schema — mirrors the entity model in Solution Architecture Document §3/§4,
+// extended with every field/behavior confirmed in the design chat (Marwa's field list,
+// per-benefit family breakdown, manual EOS/outsourcing share, 3-stage approval).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum AppRole {
+  HIRING_MANAGER
+  HR_DIRECTOR
+  PROCUREMENT
+  SECTOR_HEAD
+  ADMIN
+}
+
+enum FormStatus {
+  DRAFT
+  PENDING_HR
+  PENDING_PROCUREMENT
+  PENDING_SECTOR_HEAD
+  COMPLETED
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+}
+
+enum AcademicQualification {
+  HIGH_SCHOOL
+  DIPLOMA
+  BACHELOR
+  MASTER
+  DOCTORATE
+}
+
+enum ExperienceBand {
+  Y0_2
+  Y3_5
+  Y6_10
+  Y11_15
+  Y16_PLUS
+}
+
+enum AssessmentResult {
+  ACCEPTABLE
+  VERY_GOOD
+  EXCELLENT
+}
+
+enum SecurityClearance {
+  APPROVED
+  NOT_APPROVED
+}
+
+enum ContractType {
+  OUTSOURCED
+  SERVICE_CONTRACT
+}
+
+enum ContractDuration {
+  Y1
+  Y2
+  Y3
+  Y4
+  Y5
+}
+
+enum OutsourcingSharePercent {
+  P9
+  P18
+}
+
+enum BenefitSection {
+  AIR_TICKET
+  VISA_LABOUR
+  MEDICAL
+}
+
+enum FamilyMemberType {
+  EMPLOYEE
+  SPOUSE
+  CHILD
+}
+
+enum AttachmentSlot {
+  CV
+  QUOTATION
+  PASSPORT
+  EMPLOYEE_ID
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  SUBMIT_FOR_HR
+  HR_APPROVE
+  HR_RETURN
+  PROCUREMENT_APPROVE
+  PROCUREMENT_RETURN
+  SECTOR_HEAD_APPROVE
+  SECTOR_HEAD_RETURN
+  ATTACHMENT_ADD
+  ATTACHMENT_REPLACE
+  ATTACHMENT_REMOVE
+}
+
+// ---------------------------------------------------------------------------
+// Identity & reference data
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  name          String
+  nameAr        String?
+  role          AppRole  @default(HIRING_MANAGER)
+  ssoSubject    String?  @unique // subject/NameID from SAML or OIDC IdP
+  ssoProvider   String? // "saml" | "oidc" | "dev"
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  hiringForms   HiringForm[]     @relation("HiringManagerForms")
+  auditEntries  FormAuditLog[]
+  attachments   FormAttachment[]
+
+  @@map("app_users")
+}
+
+model Entity {
+  id        String   @id @default(uuid())
+  code      String   @unique // e.g. MOCA, PMO, FCSC
+  nameEn    String
+  nameAr    String
+  logoPath  String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  hiringForms HiringForm[]
+
+  @@map("ref_entities")
+}
+
+model Nationality {
+  id       String @id @default(uuid())
+  code     String @unique
+  nameEn   String
+  nameAr   String
+
+  @@map("ref_nationalities")
+}
+
+// ---------------------------------------------------------------------------
+// Master: hiring form
+// ---------------------------------------------------------------------------
+
+model HiringForm {
+  id             String     @id @default(uuid())
+  formCode       String     @unique // OSF-YYYY-NNNN, generated app-side from seq
+  status         FormStatus @default(DRAFT)
+
+  // --- Tab 1: Candidate Personal Data ---
+  employeeName        String
+  employeeNameAr       String?
+  photoUrl             String?
+  maritalStatus        MaritalStatus       @default(SINGLE)
+  numberOfChildren     Int                 @default(0)
+  nationalityCode      String?
+  academicQualification AcademicQualification?
+  yearsOfExperience    ExperienceBand?
+  sectorDepartment     String?
+  assessmentResult     AssessmentResult?
+  currentWorkLocation  String?
+  securityClearance    SecurityClearance?
+
+  // --- Tab 2: Employment Data ---
+  entityId          String?
+  entity            Entity?  @relation(fields: [entityId], references: [id])
+  proposedJobTitle  String
+  directManager     String?
+  contractType      ContractType?
+  contractDuration  ContractDuration?
+
+  // --- Tab 3: Fees & Costs ---
+  proposedMonthlySalary Decimal @db.Decimal(12, 2)
+  // Generated column — see migration.sql: annual_salary = proposed_monthly_salary * 12
+  annualSalary          Decimal @db.Decimal(14, 2)
+
+  isNewHire Boolean @default(true)
+
+  airTicketCurrent    Decimal @default(0) @db.Decimal(12, 2)
+  airTicketProposed   Decimal @default(0) @db.Decimal(12, 2)
+  visaLabourCurrent   Decimal @default(0) @db.Decimal(12, 2)
+  visaLabourProposed  Decimal @default(0) @db.Decimal(12, 2)
+  medicalCurrent      Decimal @default(0) @db.Decimal(12, 2)
+  medicalProposed     Decimal @default(0) @db.Decimal(12, 2)
+
+  endOfServiceCurrent   Decimal @default(0) @db.Decimal(12, 2)
+  endOfServiceProposed  Decimal @default(0) @db.Decimal(12, 2)
+
+  outsourcingSharePercent  OutsourcingSharePercent @default(P9)
+  outsourcingShareCurrent  Decimal @default(0) @db.Decimal(12, 2)
+  outsourcingShareProposed Decimal @default(0) @db.Decimal(12, 2)
+
+  // Generated columns — see migration.sql
+  totalMonthlyCost   Decimal @db.Decimal(14, 2)
+  annualContractCost Decimal @db.Decimal(14, 2)
+
+  // --- Workflow ---
+  hiringManagerId   String?
+  hiringManager     User?   @relation("HiringManagerForms", fields: [hiringManagerId], references: [id])
+  hrDirectorNotes      String?
+  procurementNotes     String?
+  sectorHeadNotes      String?
+  submittedForHrAt     DateTime?
+  hrApprovedAt         DateTime?
+  procurementApprovedAt DateTime?
+  sectorHeadApprovedAt DateTime?
+
+  createdBy  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  benefitLines FormBenefitLine[]
+  attachments  FormAttachment[]
+  auditLog     FormAuditLog[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([hiringManagerId])
+  @@map("hiring_forms")
+}
+
+// Per-person, per-benefit breakdown rows (Employee always present; Spouse/Children optional & addable)
+model FormBenefitLine {
+  id          String           @id @default(uuid())
+  formId      String
+  form        HiringForm       @relation(fields: [formId], references: [id], onDelete: Cascade)
+  section     BenefitSection
+  memberType  FamilyMemberType
+  memberIndex Int              @default(0) // disambiguates Child 1, Child 2, ...
+  label       String? // e.g. "Child 2" cached label for display
+  current     Decimal          @default(0) @db.Decimal(12, 2)
+  proposed    Decimal          @default(0) @db.Decimal(12, 2)
+  included    Boolean          @default(true) // unchecked rows are excluded from section totals
+
+  @@unique([formId, section, memberType, memberIndex])
+  @@map("form_benefit_lines")
+}
+
+model FormAttachment {
+  id           String         @id @default(uuid())
+  formId       String
+  form         HiringForm     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  slot         AttachmentSlot
+  fileName     String
+  mimeType     String
+  filePath     String
+  fileSize     Int
+  versionNo    Int            @default(1)
+  uploadedById String?
+  uploadedBy   User?          @relation(fields: [uploadedById], references: [id])
+  uploadedAt   DateTime       @default(now())
+
+  @@index([formId, slot])
+  @@map("form_attachments")
+}
+
+model FormAuditLog {
+  id         String      @id @default(uuid())
+  formId     String
+  form       HiringForm  @relation(fields: [formId], references: [id], onDelete: Cascade)
+  action     AuditAction
+  oldValue   String?
+  newValue   String?
+  actedById  String?
+  actedBy    User?       @relation(fields: [actedById], references: [id])
+  actedAt    DateTime    @default(now())
+
+  @@index([formId])
+  @@map("form_audit_log")
+}
