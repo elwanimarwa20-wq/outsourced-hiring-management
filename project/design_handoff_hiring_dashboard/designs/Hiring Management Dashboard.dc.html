@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  ::-webkit-scrollbar { height: 9px; width: 9px; }
+  ::-webkit-scrollbar-thumb { background: #cfc9b8; border-radius: 6px; }
+  @media print {
+    .app-chrome { display: none !important; }
+    .print-sheet { box-shadow: none !important; border: none !important; margin: 0 !important; }
+    body { background: #fff !important; }
+  }
+</style>
+</helmet>
+<div dir="{{ dir }}" style="min-height:100vh;background:#F2F0E9;color:#23211C;font-family:{{ fontStack }};-webkit-font-smoothing:antialiased;">
+
+  <!-- ===== TOP CHROME ===== -->
+  <div class="app-chrome">
+    <div style="height:4px;background:linear-gradient(90deg,#7C1733 0%,#9E7B2F 60%,#C7A24A 100%);"></div>
+    
+    <header style="background:#fff;border-bottom:1px solid #E6E1D4;padding:12px 28px;display:flex;align-items:center;gap:20px;justify-content:space-between;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:18px;">
+        
+        <div style="width:1px;height:48px;background:#E6E1D4;"></div>
+        <div>
+          <div style="font-size:15px;font-weight:700;letter-spacing:-0.01em;line-height:1.2;" data-om-label="توظيف عقود التعهيد وقعود الخدمات">{{ L.appName }}</div>
+          <div style="font-size:11.5px;color:#8C877A;font-weight:500;margin-top:2px;">{{ L.appSub }}</div>
+        </div>
+      </div>
+      <img src="assets/moca-logo.jpg" alt="UAE Ministry of Cabinet Affairs" style="height: 118px; width: 441px; display: block" data-comment-anchor="6cb019a950-img"><div style="display:flex;align-items:center;gap:10px;">
+        <button onClick="{{ toggleLang }}" style-hover="background:#F3ECDC;border-color:#C7A24A;" style="font-family:inherit;font-size:13px;font-weight:600;color:#23211C;background:#fff;border:1px solid #E6E1D4;border-radius:8px;padding:8px 14px;cursor:pointer;transition:all .15s;">{{ langBtn }}</button>
+        <div style="display:flex;align-items:center;gap:8px;background:#F8F6F0;border:1px solid #E6E1D4;border-radius:8px;padding:5px 10px;">
+          <span style="font-size:11px;color:#8C877A;font-weight:500;">{{ L.role }}</span>
+          <select value="{{ role }}" onChange="{{ setRole }}" style="font-family:inherit;font-size:13px;font-weight:600;color:#23211C;background:transparent;border:none;cursor:pointer;outline:none;">
+            <sc-for list="{{ roleOptions }}" as="r" hint-placeholder-count="3"><option value="{{ r.value }}">{{ r.label }}</option></sc-for>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;gap:9px;">
+          <div style="width:34px;height:34px;border-radius:50%;background:#7C1733;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">{{ userInitials }}</div>
+          <div style="line-height:1.25;">
+            <div style="font-size:12.5px;font-weight:600;">{{ userName }}</div>
+            <div style="font-size:10.5px;color:#8C877A;">{{ roleLabel }}</div>
+          </div>
+        </div>
+      </div>
+    </header><nav style="background:#fff;border-bottom:1px solid #E6E1D4;padding:0 28px;display:flex;gap:4px;">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2">
+        <button onClick="{{ t.go }}" style="font-family:inherit;font-size:13.5px;font-weight:600;background:transparent;border:none;border-bottom:3px solid {{ t.border }};color:{{ t.color }};padding:13px 16px;cursor:pointer;">{{ t.label }}</button>
+      </sc-for>
+    </nav>
+  </div><main style="padding:24px 28px 48px;max-width:1500px;margin:0 auto;">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap;">
+      <div>
+        <h1 style="font-size:22px;font-weight:700;margin:0 0 4px;letter-spacing:-0.02em;">{{ L.dashTitle }}</h1>
+        <p style="font-size:13px;color:#8C877A;margin:0;">{{ L.dashSub }}</p>
+      </div>
+      <button onClick="{{ newForm }}" style-hover="background:#8C6B26;" style="font-family:inherit;font-size:13.5px;font-weight:600;color:#fff;background:#9E7B2F;border:none;border-radius:9px;padding:11px 18px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .15s;box-shadow:0 1px 2px rgba(0,0,0,.12);">＋ {{ L.newForm }}</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;">
+      <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+        <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;{{ startSide }}:0;width:4px;height:100%;background:{{ k.accent }};"></div>
+          
+          <div style="font-size:26px;font-weight:700;margin-top:6px;letter-spacing:-0.02em;">{{ k.value }}</div>
+          <div style="font-size:11.5px;color:#8C877A;margin-top:3px;">{{ k.note }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;padding:16px 18px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span style="font-size:13px;font-weight:700;">{{ L.filters }}</span>
+        <button onClick="{{ clearFilters }}" style="font-family:inherit;font-size:11.5px;font-weight:600;color:#9E7B2F;background:transparent;border:none;cursor:pointer;">{{ L.clear }}</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:10px;">
+        <input value="{{ filters.q }}" onInput="{{ setQ }}" placeholder="{{ L.searchName }}" style="font-family:inherit;font-size:13px;padding:9px 11px;border:1px solid #E6E1D4;border-radius:8px;outline:none;width:100%;">
+        <select value="{{ filters.status }}" onChange="{{ setFStatus }}" style="font-family:inherit;font-size:13px;padding:9px 11px;border:1px solid #E6E1D4;border-radius:8px;outline:none;background:#fff;">
+          <option value="">{{ L.allStatus }}</option>
+          <sc-for list="{{ statusOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+        </select>
+        <select value="{{ filters.contract }}" onChange="{{ setFContract }}" style="font-family:inherit;font-size:13px;padding:9px 11px;border:1px solid #E6E1D4;border-radius:8px;outline:none;background:#fff;">
+          <option value="">{{ L.allContract }}</option>
+          <sc-for list="{{ contractOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+        </select>
+        <select value="{{ filters.nationality }}" onChange="{{ setFNat }}" style="font-family:inherit;font-size:13px;padding:9px 11px;border:1px solid #E6E1D4;border-radius:8px;outline:none;background:#fff;">
+          <option value="">{{ L.allNat }}</option>
+          <sc-for list="{{ natOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for>
+        </select>
+        <select value="{{ filters.manager }}" onChange="{{ setFMgr }}" style="font-family:inherit;font-size:13px;padding:9px 11px;border:1px solid #E6E1D4;border-radius:8px;outline:none;background:#fff;">
+          <option value="">{{ L.allMgr }}</option>
+          <sc-for list="{{ mgrOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o }}">{{ o }}</option></sc-for>
+        </select>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;overflow:hidden;">
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:12.5px;min-width:1180px;">
+          <thead>
+            <tr style="background:#F8F6F0;text-align:{{ startAlign }};">
+              <sc-for list="{{ cols }}" as="c" hint-placeholder-count="11"><th style="padding:11px 14px;font-weight:600;color:#6B6657;white-space:nowrap;border-bottom:1px solid #E6E1D4;font-size:11px;text-transform:uppercase;letter-spacing:0.03em;text-align:{{ c.align }};">{{ c.label }}</th></sc-for>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+              <tr style-hover="background:#FBFAF6;" style="border-bottom:1px solid #F0EDE3;transition:background .12s;">
+                <td style="padding:11px 14px;font-weight:600;color:#9E7B2F;white-space:nowrap;">{{ r.id }}</td>
+                <td style="padding:11px 14px;font-weight:600;white-space:nowrap;">{{ r.name }}</td>
+                <td style="padding:11px 14px;color:#4A463C;white-space:nowrap;">{{ r.position }}</td>
+                <td style="padding:11px 14px;color:#4A463C;white-space:nowrap;">{{ r.nationality }}</td>
+                <td style="padding:11px 14px;text-align:{{ endAlign }};font-variant-numeric:tabular-nums;white-space:nowrap;">{{ r.monthly }}</td>
+                <td style="padding:11px 14px;text-align:{{ endAlign }};font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600;">{{ r.annual }}</td>
+                <td style="padding:11px 14px;white-space:nowrap;"><span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:20px;background:{{ r.statusBg }};color:{{ r.statusFg }};"><span style="width:6px;height:6px;border-radius:50%;background:{{ r.statusFg }};"></span>{{ r.statusLabel }}</span></td>
+                <td style="padding:11px 14px;color:#4A463C;white-space:nowrap;">{{ r.createdBy }}</td>
+                <td style="padding:11px 14px;color:#8C877A;white-space:nowrap;">{{ r.created }}</td>
+                <td style="padding:11px 14px;color:#8C877A;white-space:nowrap;">{{ r.updated }}</td>
+                <td style="padding:11px 14px;white-space:nowrap;">
+                  <div style="display:flex;gap:6px;">
+                    <button onClick="{{ r.open }}" style-hover="background:#F3ECDC;" style="font-family:inherit;font-size:11.5px;font-weight:600;color:#9E7B2F;background:#FBF6EA;border:1px solid #EDE2C7;border-radius:6px;padding:5px 10px;cursor:pointer;">{{ L.open }}</button>
+                  </div>
+                </td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:11px 16px;font-size:12px;color:#8C877A;border-top:1px solid #F0EDE3;display:flex;justify-content:space-between;align-items:center;">
+        <span>{{ rowCountLabel }}</span>
+        <span>{{ L.poweredBy }}</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== DASHBOARD ===== -->
+  <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+  
+  </sc-if>
+
+  <!-- ===== HIRING FORM ===== -->
+  <sc-if value="{{ isForm }}" hint-placeholder-val="{{ false }}">
+  <main style="padding:20px 28px 60px;max-width:1100px;margin:0 auto;">
+
+    <button onClick="{{ backToDash }}" style="font-family:inherit;font-size:13px;font-weight:600;color:#8C877A;background:transparent;border:none;cursor:pointer;padding:0;margin-bottom:14px;">← {{ L.backToDash }}</button>
+
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <h1 style="font-size:21px;font-weight:700;margin:0;letter-spacing:-0.02em;">{{ formHeading }}</h1>
+          <span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:20px;background:{{ draftStatusBg }};color:{{ draftStatusFg }};"><span style="width:6px;height:6px;border-radius:50%;background:{{ draftStatusFg }};"></span>{{ draftStatusLabel }}</span>
+        </div>
+        <p style="font-size:12.5px;color:#8C877A;margin:5px 0 0;">{{ formMeta }}</p>
+      </div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;">
+        <button onClick="{{ saveDraft }}" style-hover="background:#F2F0E9;" style="font-family:inherit;font-size:13px;font-weight:600;color:#4A463C;background:#fff;border:1px solid #D9D3C2;border-radius:9px;padding:10px 16px;cursor:pointer;">{{ L.saveDraft }}</button>
+        <button onClick="{{ printActive }}" style-hover="background:#8C6B26;" style="font-family:inherit;font-size:13px;font-weight:600;color:#fff;background:#9E7B2F;border:none;border-radius:9px;padding:10px 16px;cursor:pointer;">⎙ {{ L.print }}</button>
+      </div>
+    </div>
+
+    <sc-if value="{{ savedNote }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#E4EFE8;border:1px solid #BFD9C9;color:#255B41;font-size:13px;font-weight:600;border-radius:9px;padding:11px 15px;margin-bottom:14px;">✓ {{ savedNote }}</div>
+    </sc-if>
+
+    <!-- Form Tab Bar -->
+    <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;padding:0;margin-bottom:18px;display:flex;overflow:hidden;">
+      <button onClick="{{ goTab1 }}" style="font-family:inherit;flex:1;font-size:13px;font-weight:600;padding:14px 10px;border:none;border-bottom:3px solid {{ tab1Border }};color:{{ tab1Color }};background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .15s;">
+        <span style="width:24px;height:24px;border-radius:50%;background:{{ tab1NumBg }};color:{{ tab1NumFg }};display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none;">1</span>
+        {{ L.tab1 }}
+      </button>
+      <div style="width:1px;background:#E6E1D4;"></div>
+      <button onClick="{{ goTab2 }}" style="font-family:inherit;flex:1;font-size:13px;font-weight:600;padding:14px 10px;border:none;border-bottom:3px solid {{ tab2Border }};color:{{ tab2Color }};background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .15s;">
+        <span style="width:24px;height:24px;border-radius:50%;background:{{ tab2NumBg }};color:{{ tab2NumFg }};display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none;">2</span>
+        {{ L.tab2 }}
+      </button>
+      <div style="width:1px;background:#E6E1D4;"></div>
+      <button onClick="{{ goTab3 }}" style="font-family:inherit;flex:1;font-size:13px;font-weight:600;padding:14px 10px;border:none;border-bottom:3px solid {{ tab3Border }};color:{{ tab3Color }};background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .15s;">
+        <span style="width:24px;height:24px;border-radius:50%;background:{{ tab3NumBg }};color:{{ tab3NumFg }};display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none;">3</span>
+        {{ L.tab3 }}
+      </button>
+    </div>
+
+    <!-- ─── TAB 1: Candidate Personal Data ─── -->
+    <sc-if value="{{ isTab1 }}" hint-placeholder-val="{{ true }}">
+
+      <!-- Photo -->
+      <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;margin-bottom:16px;overflow:hidden;">
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid #F0EDE3;background:#FBFAF6;">
+          <div style="width:28px;height:28px;border-radius:7px;background:#7C1733;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;">📷</div>
+          <div style="font-size:14.5px;font-weight:700;">{{ L.photoTitle }}</div>
+        </div>
+        <div style="padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
+            <button onClick="{{ addAttach }}" style-hover="background:#8C6B26;" style="font-family:inherit;font-size:13px;font-weight:600;color:#fff;background:#9E7B2F;border:none;border-radius:9px;padding:10px 18px;cursor:pointer;display:flex;align-items:center;gap:8px;">📷 {{ L.photoUploadBtn }}</button>
+            <div style="font-size:12px;color:#8C877A;">{{ L.photoSizeHint }}</div>
+          </div>
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="employee-photo" shape="circle" fit="cover" placeholder="👤" style="width:80px;height:80px;display:block;flex:none;border:2px solid #E6E1D4;border-radius:50%;background:#F2F0E9;" hint-size="80px,80px"></x-import>
+        </div>
+      </div>
+
+      <!-- Fields -->
+      <sc-for list="{{ tab1Sections }}" as="sec" hint-placeholder-count="1">
+        <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;margin-bottom:16px;overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid #F0EDE3;background:#FBFAF6;">
+            <div style="width:28px;height:28px;border-radius:7px;background:#9E7B2F;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">{{ sec.num }}</div>
+            <div style="font-size:14.5px;font-weight:700;">{{ sec.title }}</div>
+          </div>
+          <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <sc-for list="{{ sec.fields }}" as="fld" hint-placeholder-count="6">
+              <div style="grid-column:span {{ fld.span }};">
+                <label style="display:block;font-size:11.5px;font-weight:600;color:#6B6657;margin-bottom:6px;">{{ fld.label }}</label>
+                <sc-if value="{{ fld.isSelect }}" hint-placeholder-val="{{ false }}">
+                  <select value="{{ fld.value }}" onChange="{{ fld.handler }}" style="font-family:inherit;font-size:13.5px;padding:10px 12px;border:1px solid #E6E1D4;border-radius:8px;outline:none;width:100%;background:#fff;">
+                    <sc-for list="{{ fld.options }}" as="op" hint-placeholder-count="3"><option value="{{ op.value }}">{{ op.label }}</option></sc-for>
+                  </select>
+                </sc-if>
+                <sc-if value="{{ fld.isInput }}" hint-placeholder-val="{{ true }}">
+                  <input value="{{ fld.value }}" onInput="{{ fld.handler }}" type="{{ fld.inputType }}" placeholder="{{ fld.ph }}" style="font-family:inherit;font-size:13.5px;padding:10px 12px;border:1px solid #E6E1D4;border-radius:8px;outline:none;width:100%;">
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+
+      <div style="display:flex;justify-content:flex-end;margin-top:6px;">
+        <button onClick="{{ nextTab }}" style-hover="background:#8C6B26;" style="font-family:inherit;font-size:13px;font-weight:600;color:#fff;background:#9E7B2F;border:none;border-radius:9px;padding:10px 20px;cursor:pointer;">{{ L.nextTab }} ←</button>
+      </div>
+    </sc-if>
+
+    <!-- ─── TAB 2: Employment Data ─── -->
+    <sc-if value="{{ isTab2 }}" hint-placeholder-val="{{ false }}">
+      <sc-for list="{{ tab2Sections }}" as="sec" hint-placeholder-count="1">
+        <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;margin-bottom:16px;overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid #F0EDE3;background:#FBFAF6;">
+            <div style="width:28px;height:28px;border-radius:7px;background:#9E7B2F;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">{{ sec.num }}</div>
+            <div style="font-size:14.5px;font-weight:700;">{{ sec.title }}</div>
+          </div>
+          <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <sc-for list="{{ sec.fields }}" as="fld" hint-placeholder-count="4">
+              <div style="grid-column:span {{ fld.span }};">
+                <label style="display:block;font-size:11.5px;font-weight:600;color:#6B6657;margin-bottom:6px;">{{ fld.label }}</label>
+                <sc-if value="{{ fld.isSelect }}" hint-placeholder-val="{{ false }}">
+                  <select value="{{ fld.value }}" onChange="{{ fld.handler }}" style="font-family:inherit;font-size:13.5px;padding:10px 12px;border:1px solid #E6E1D4;border-radius:8px;outline:none;width:100%;background:#fff;">
+                    <sc-for list="{{ fld.options }}" as="op" hint-placeholder-count="3"><option value="{{ op.value }}">{{ op.label }}</option></sc-for>
+                  </select>
+                </sc-if>
+                <sc-if value="{{ fld.isInput }}" hint-placeholder-val="{{ true }}">
+                  <input value="{{ fld.value }}" onInput="{{ fld.handler }}" type="{{ fld.inputType }}" placeholder="{{ fld.ph }}" style="font-family:inherit;font-size:13.5px;padding:10px 12px;border:1px solid #E6E1D4;border-radius:8px;outline:none;width:100%;">
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;">
+        <button onClick="{{ prevTab }}" style-hover="background:#F2F0E9;" style="font-family:inherit;font-size:13px;font-weight:600;color:#4A463C;background:#fff;border:1px solid #D9D3C2;border-radius:9px;padding:10px 18px;cursor:pointer;">→ {{ L.prevTab }}</button>
+        <button onClick="{{ nextTab }}" style-hover="background:#8C6B26;" style="font-family:inherit;font-size:13px;font-weight:600;color:#fff;background:#9E7B2F;border:none;border-radius:9px;padding:10px 20px;cursor:pointer;">{{ L.nextTab }} ←</button>
+      </div>
+    </sc-if>
+
+    <!-- ─── TAB 3: Fees & Costs Comparison ─── -->
+    <sc-if value="{{ isTab3 }}" hint-placeholder-val="{{ false }}">
+
+      <!-- New-hire toggle -->
+      <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;padding:16px 20px;margin-bottom:16px;">
+        <div style="display:flex;align-items:flex-start;gap:14px;">
+          <div onClick="{{ toggleNewHire }}" style="cursor:pointer;flex:none;margin-top:2px;">
+            <div style="width:44px;height:26px;border-radius:13px;background:{{ toggleBg }};position:relative;transition:background .2s;">
+              <div style="position:absolute;top:3px;left:{{ toggleKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:left .2s;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:13.5px;font-weight:700;color:#23211C;">{{ L.newHireToggle }}</div>
+            <div style="font-size:12px;color:#8C877A;margin-top:3px;">{{ L.newHireHint }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison table -->
+      <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;overflow:hidden;margin-bottom:16px;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="background:#F8F6F0;">
+              <th style="padding:11px 14px;font-weight:700;color:#4A463C;text-align:{{ startAlign }};border-bottom:2px solid #E6E1D4;width:38%;">{{ L.colItem }}</th>
+              <sc-if value="{{ showCurrent }}">
+                <th style="padding:11px 14px;font-weight:700;color:#4A463C;text-align:{{ endAlign }};border-bottom:2px solid #E6E1D4;width:18%;">{{ L.colCurrent }}</th>
+              </sc-if>
+              <th style="padding:11px 14px;font-weight:700;color:#9E7B2F;text-align:{{ endAlign }};border-bottom:2px solid #E6E1D4;width:20%;">{{ L.colProposed }}</th>
+              <th style="padding:11px 14px;font-weight:700;color:#4A463C;text-align:{{ endAlign }};border-bottom:2px solid #E6E1D4;width:18%;">{{ L.colDiff }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- GROUP 1 -->
+            <tr style="background:#F3EDE3;">
+              <td colspan="{{ colCount }}" style="padding:9px 14px;font-size:12px;font-weight:700;color:#7A5E1F;letter-spacing:0.02em;">{{ L.groupSalary }}</td>
+            </tr>
+            <!-- Monthly salary -->
+            <tr style="border-bottom:1px solid #F0EDE3;">
+              <td style="padding:9px 14px;color:#332F28;">{{ L.rowMonthlySalary }}</td>
+              <sc-if value="{{ showCurrent }}">
+                <td style="padding:6px 10px;"><input type="number" value="{{ cmp.prevMonthly }}" onInput="{{ setPrevMonthly }}" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid #E6E1D4;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};font-variant-numeric:tabular-nums;"></td>
+              </sc-if>
+              <td style="padding:6px 10px;"><input type="number" value="{{ cmp.propMonthly }}" onInput="{{ setProposedMonthly }}" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1.5px solid #C7A24A;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};font-variant-numeric:tabular-nums;background:#FFFDF5;"></td>
+              <td style="padding:9px 14px;font-weight:600;color:{{ cmp.salDiffCol }};text-align:{{ endAlign }};font-variant-numeric:tabular-nums;">{{ cmp.salDiff }}</td>
+            </tr>
+            <!-- Air ticket -->
+            <tr style="border-bottom:1px solid #F0EDE3;">
+              <td style="padding:9px 14px;color:#332F28;">{{ L.rowAirTicket }}</td>
+              <sc-if value="{{ showCurrent }}">
+                <td style="padding:6px 10px;"><input type="number" value="{{ cmp.prevTicket }}" onInput="{{ setPrevTicket }}" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid #E6E1D4;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};font-variant-numeric:tabular-nums;"></td>
+              </sc-if>
+              <td style="padding:6px 10px;"><input type="number" value="{{ cmp.propTicket }}" onInput="{{ setPropTicket }}" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1.5px solid #C7A24A;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};font-variant-numeric:tabular-nums;background:#FFFDF5;"></td>
+              <td style="padding:9px 14px;font-weight:600;color:{{ cmp.tktDiffCol }};text-align:{{ endAlign }};font-variant-numeric:tabular-nums;">{{ cmp.tktDiff }}</td>
+            </tr>
+            <!-- Accommodation -->
+            <tr style="border-bottom:1px solid #F0EDE3;">
+              <td style="padding:9px 14px;color:#332F28;">{{ L.rowAccom }}</td>
+              <sc-if value="{{ showCurrent }}">
+                <td style="padding:6px 10px;"><input type="number" value="{{ cmp.prevAccom }}" onInput="{{ setPrevAccom }}" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid #E6E1D4;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};font-variant-numeric:tabular-nums;"></td>
+              </sc-if>
+              <td style="padding:6px 10px;"><input type="number" value="{{ cmp.propAccom }}" onInput="{{ setPropAccom }}" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1.5px solid #C7A24A;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};font-variant-numeric:tabular-nums;background:#FFFDF5;"></td>
+              <td style="padding:9px 14px;font-weight:600;color:{{ cmp.accDiffCol }};text-align:{{ endAlign }};font-variant-numeric:tabular-nums;">{{ cmp.accDiff }}</td>
+            </tr>
+            <!-- Monthly subtotal -->
+            <tr style="background:#FBF6EA;border-bottom:1px solid #EDE2C7;">
+              <td style="padding:11px 14px;font-weight:700;color:#7A5E1F;">{{ L.rowMonthlyTotal }}</td>
+              <sc-if value="{{ showCurrent }}">
+                <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:600;color:#7A5E1F;font-variant-numeric:tabular-nums;">{{ cmp.prevBaseDisplay }}</td>
+              </sc-if>
+              <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:700;color:#9E7B2F;font-variant-numeric:tabular-nums;">{{ cmp.propBaseDisplay }}</td>
+              <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:700;color:{{ cmp.baseDiffCol }};font-variant-numeric:tabular-nums;">{{ cmp.baseDiff }}</td>
+            </tr>
+
+            <!-- GROUP 2 -->
+            <tr style="background:#F3EDE3;">
+              <td colspan="{{ colCount }}" style="padding:9px 14px;font-size:12px;font-weight:700;color:#7A5E1F;letter-spacing:0.02em;">{{ L.groupBenefits }}</td>
+            </tr>
+            <!-- Medical insurance -->
+            <tr style="border-bottom:1px solid #F0EDE3;">
+              <td style="padding:9px 14px;color:#332F28;">{{ L.rowMedical }}</td>
+              <sc-if value="{{ showCurrent }}">
+                <td style="padding:6px 10px;"><input type="number" value="{{ cmp.prevMedical }}" onInput="{{ setPrevMedical }}" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid #E6E1D4;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};font-variant-numeric:tabular-nums;"></td>
+              </sc-if>
+              <td style="padding:6px 10px;"><input type="number" value="{{ cmp.propMedical }}" onInput="{{ setPropMedical }}" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1.5px solid #C7A24A;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};font-variant-numeric:tabular-nums;background:#FFFDF5;"></td>
+              <td style="padding:9px 14px;font-weight:600;color:{{ cmp.medDiffCol }};text-align:{{ endAlign }};font-variant-numeric:tabular-nums;">{{ cmp.medDiff }}</td>
+            </tr>
+            <!-- EOS auto -->
+            <tr style="border-bottom:1px solid #F0EDE3;">
+              <td style="padding:9px 14px;color:#332F28;">{{ L.rowEOS }}</td>
+              <sc-if value="{{ showCurrent }}">
+                <td style="padding:9px 14px;text-align:{{ endAlign }};color:#4A463C;font-variant-numeric:tabular-nums;">{{ cmp.prevEOSDisplay }}</td>
+              </sc-if>
+              <td style="padding:9px 14px;text-align:{{ endAlign }};color:#4A463C;font-variant-numeric:tabular-nums;">{{ cmp.propEOSDisplay }}</td>
+              <td style="padding:9px 14px;font-weight:600;color:{{ cmp.eosDiffCol }};text-align:{{ endAlign }};font-variant-numeric:tabular-nums;">{{ cmp.eosDiff }}</td>
+            </tr>
+            <!-- Outsourcing share auto -->
+            <tr style="border-bottom:1px solid #EDE2C7;">
+              <td style="padding:9px 14px;color:#332F28;">{{ L.rowOutsource }}</td>
+              <sc-if value="{{ showCurrent }}">
+                <td style="padding:9px 14px;text-align:{{ endAlign }};color:#4A463C;font-variant-numeric:tabular-nums;">{{ cmp.prevOSDisplay }}</td>
+              </sc-if>
+              <td style="padding:9px 14px;text-align:{{ endAlign }};color:#4A463C;font-variant-numeric:tabular-nums;">{{ cmp.propOSDisplay }}</td>
+              <td style="padding:9px 14px;font-weight:600;color:{{ cmp.osDiffCol }};text-align:{{ endAlign }};font-variant-numeric:tabular-nums;">{{ cmp.osDiff }}</td>
+            </tr>
+            <!-- Contract monthly total -->
+            <tr style="background:#FBF6EA;border-bottom:1px solid #EDE2C7;">
+              <td style="padding:11px 14px;font-weight:700;color:#7A5E1F;">{{ L.rowContractMonthly }}</td>
+              <sc-if value="{{ showCurrent }}">
+                <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:600;color:#7A5E1F;font-variant-numeric:tabular-nums;">{{ cmp.prevContDisplay }}</td>
+              </sc-if>
+              <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:700;color:#9E7B2F;font-variant-numeric:tabular-nums;">{{ cmp.propContDisplay }}</td>
+              <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:700;color:{{ cmp.contDiffCol }};font-variant-numeric:tabular-nums;">{{ cmp.contDiff }}</td>
+            </tr>
+            <!-- Total incl. benefits monthly -->
+            <tr style="background:#FBF6EA;border-bottom:1px solid #EDE2C7;">
+              <td style="padding:11px 14px;font-weight:700;color:#7A5E1F;">{{ L.rowTotalMonthly }}</td>
+              <sc-if value="{{ showCurrent }}">
+                <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:600;color:#7A5E1F;font-variant-numeric:tabular-nums;">{{ cmp.prevContDisplay }}</td>
+              </sc-if>
+              <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:700;color:#9E7B2F;font-variant-numeric:tabular-nums;">{{ cmp.propContDisplay }}</td>
+              <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:700;color:{{ cmp.contDiffCol }};font-variant-numeric:tabular-nums;">{{ cmp.contDiff }}</td>
+            </tr>
+            <!-- Annual total -->
+            <tr style="background:#7C1733;">
+              <td style="padding:13px 14px;font-weight:700;color:#fff;">{{ L.rowAnnualTotal }}</td>
+              <sc-if value="{{ showCurrent }}">
+                <td style="padding:13px 14px;text-align:{{ endAlign }};color:#FDDDC9;font-weight:600;font-variant-numeric:tabular-nums;">{{ cmp.prevAnnDisplay }}</td>
+              </sc-if>
+              <td style="padding:13px 14px;text-align:{{ endAlign }};font-weight:700;color:#FFE6B0;font-size:15px;font-variant-numeric:tabular-nums;">{{ cmp.propAnnDisplay }}</td>
+              <td style="padding:13px 14px;text-align:{{ endAlign }};font-weight:700;color:#fff;font-variant-numeric:tabular-nums;">{{ cmp.annDiff }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tab 3 action bar -->
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+        <button onClick="{{ prevTab }}" style-hover="background:#F2F0E9;" style="font-family:inherit;font-size:13px;font-weight:600;color:#4A463C;background:#fff;border:1px solid #D9D3C2;border-radius:9px;padding:10px 18px;cursor:pointer;">→ {{ L.prevTab }}</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onClick="{{ saveDraft }}" style-hover="background:#F2F0E9;" style="font-family:inherit;font-size:13px;font-weight:600;color:#4A463C;background:#fff;border:1px solid #D9D3C2;border-radius:9px;padding:10px 16px;cursor:pointer;">💾 {{ L.saveDraft }}</button>
+          <button onClick="{{ printActive }}" style-hover="background:#7A5E1F;" style="font-family:inherit;font-size:13px;font-weight:600;color:#fff;background:#9E7B2F;border:none;border-radius:9px;padding:10px 16px;cursor:pointer;">⎙ {{ L.pdfExport }}</button>
+          <button onClick="{{ completeForm }}" style-hover="background:#255B41;" style="font-family:inherit;font-size:13px;font-weight:600;color:#fff;background:#2F6B4F;border:none;border-radius:9px;padding:10px 16px;cursor:pointer;">✓ {{ L.approve }}</button>
+          <button onClick="{{ submitApproval }}" style-hover="background:#6A0F2A;" style="font-family:inherit;font-size:13px;font-weight:600;color:#fff;background:#7C1733;border:none;border-radius:9px;padding:10px 16px;cursor:pointer;">{{ L.sendApproval }} ←</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- Attachments -->
+    <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;margin-top:18px;overflow:hidden;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #F0EDE3;background:#FBFAF6;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:28px;height:28px;border-radius:7px;background:#7C1733;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;">📎</div>
+          <div style="font-size:14.5px;font-weight:700;">{{ L.attachments }}</div>
+        </div>
+        <button onClick="{{ addAttach }}" style-hover="background:#F3ECDC;" style="font-family:inherit;font-size:12.5px;font-weight:600;color:#9E7B2F;background:#FBF6EA;border:1px solid #EDE2C7;border-radius:8px;padding:8px 14px;cursor:pointer;">＋ {{ L.upload }}</button>
+      </div>
+      <div style="padding:8px 20px 14px;">
+        <div style="font-size:12px;color:#8C877A;padding:8px 0;">{{ L.attachHint }}</div>
+        <sc-for list="{{ attachments }}" as="a" hint-placeholder-count="2">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #F0EDE3;">
+            <div style="width:34px;height:34px;border-radius:7px;background:#F2F0E9;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#7C1733;">{{ a.ext }}</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;">{{ a.name }}</div>
+              <div style="font-size:11px;color:#8C877A;">{{ a.meta }}</div>
+            </div>
+            <span style="font-size:11px;color:#8C877A;">{{ a.date }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- Audit trail -->
+    <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;margin-top:16px;overflow:hidden;">
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid #F0EDE3;background:#FBFAF6;">
+        <div style="width:28px;height:28px;border-radius:7px;background:#4A463C;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;">↻</div>
+        <div style="font-size:14.5px;font-weight:700;">{{ L.auditTrail }}</div>
+      </div>
+      <div style="padding:16px 20px;">
+        <sc-for list="{{ audit }}" as="ev" hint-placeholder-count="3">
+          <div style="display:flex;gap:12px;padding-bottom:14px;">
+            <div style="width:9px;height:9px;border-radius:50%;background:{{ ev.dot }};margin-top:4px;flex:none;box-shadow:0 0 0 1.5px {{ ev.dot }};"></div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;">{{ ev.action }}</div>
+              <div style="font-size:11.5px;color:#8C877A;margin-top:2px;">{{ ev.by }} · {{ ev.time }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+  </main>
+  </sc-if>
+
+  <!-- ===== REPORTS ===== -->
+  <sc-if value="{{ isReports }}" hint-placeholder-val="{{ false }}">
+  <main style="padding:24px 28px 48px;max-width:1500px;margin:0 auto;">
+    <h1 style="font-size:22px;font-weight:700;margin:0 0 4px;letter-spacing:-0.02em;">{{ L.reportsTitle }}</h1>
+    <p style="font-size:13px;color:#8C877A;margin:0 0 20px;">{{ L.reportsSub }}</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;">
+      <sc-for list="{{ reportKpis }}" as="k" hint-placeholder-count="4">
+        <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;padding:16px 18px;">
+          <div style="font-size:11.5px;color:#8C877A;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;">{{ k.label }}</div>
+          <div style="font-size:24px;font-weight:700;margin-top:6px;letter-spacing:-0.02em;color:{{ k.color }};">{{ k.value }}</div>
+          <div style="font-size:11.5px;color:#8C877A;margin-top:3px;">{{ k.note }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;padding:18px 20px;">
+        <div style="font-size:14px;font-weight:700;margin-bottom:18px;">{{ L.monthlyTrend }}</div>
+        <div style="display:flex;align-items:flex-end;gap:14px;height:180px;">
+          <sc-for list="{{ monthly }}" as="m" hint-placeholder-count="6">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end;">
+              <div style="font-size:12px;font-weight:700;color:#9E7B2F;">{{ m.count }}</div>
+              <div style="width:100%;max-width:46px;height:{{ m.h }}px;background:linear-gradient(180deg,#B8893B,#9E7B2F);border-radius:6px 6px 0 0;"></div>
+              <div style="font-size:11px;color:#8C877A;font-weight:500;">{{ m.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;padding:18px 20px;">
+        <div style="font-size:14px;font-weight:700;margin-bottom:18px;">{{ L.statusSplit }}</div>
+        <div style="display:flex;flex-direction:column;gap:18px;margin-top:8px;">
+          <sc-for list="{{ statusData }}" as="s" hint-placeholder-count="2">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:7px;">
+                <span style="font-weight:600;">{{ s.label }}</span>
+                <span style="color:#8C877A;font-weight:600;">{{ s.count }} · {{ s.pct }}%</span>
+              </div>
+              <div style="height:12px;background:#F2F0E9;border-radius:8px;overflow:hidden;">
+                <div style="width:{{ s.pct }}%;height:100%;background:{{ s.color }};border-radius:8px;"></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top:24px;padding-top:18px;border-top:1px solid #F0EDE3;font-size:12.5px;color:#6B6657;">{{ L.statusFooter }}</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;padding:18px 20px;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:18px;">{{ L.avgByCat }}</div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <sc-for list="{{ catAvg }}" as="c" hint-placeholder-count="2">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:170px;font-size:13px;font-weight:600;flex:none;">{{ c.cat }}</div>
+            <div style="flex:1;height:30px;background:#F2F0E9;border-radius:8px;overflow:hidden;">
+              <div style="width:{{ c.w }}%;height:100%;background:linear-gradient(90deg,#7C1733,#A6304F);border-radius:8px;display:flex;align-items:center;padding:0 12px;">
+                <span style="color:#fff;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;">{{ c.avg }}</span>
+              </div>
+            </div>
+            <div style="width:80px;font-size:11.5px;color:#8C877A;text-align:{{ endAlign }};flex:none;">{{ c.n }} {{ L.forms }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+
+  <!-- ===== PRINT ===== -->
+  <sc-if value="{{ isPrint }}" hint-placeholder-val="{{ false }}">
+  
+  </sc-if>
+
+</div>
+
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="#9E7B2F"></rect>
+  <rect x="110" y="90" width="180" height="220" rx="14" fill="#FBFAF6"></rect>
+  <rect x="136" y="126" width="128" height="14" rx="7" fill="#7C1733"></rect>
+  <rect x="136" y="160" width="128" height="9" rx="4" fill="#D9D3C2"></rect>
+  <rect x="136" y="178" width="96" height="9" rx="4" fill="#D9D3C2"></rect>
+  <rect x="136" y="206" width="128" height="36" rx="6" fill="#1E1B16"></rect>
+  <rect x="148" y="218" width="60" height="6" rx="3" fill="#E0B354"></rect>
+  <rect x="148" y="230" width="40" height="6" rx="3" fill="#9FC79A"></rect>
+  <rect x="110" y="270" width="180" height="22" rx="6" fill="#7C1733"></rect>
+  <rect x="120" y="277" width="80" height="8" rx="4" fill="#FFE6B0"></rect>
+</svg>
+</template>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:860}}">
+class Component extends DCLogic {
+  state = {
+    lang: 'en', role: 'hr', view: 'dashboard',
+    formTab: 1, isNewHire: false,
+    activeId: null, printId: null, draft: null, savedNote: '',
+    filters: { q:'', status:'', contract:'', nationality:'', manager:'' },
+    forms: this.seed()
+  };
+
+  componentDidMount() {
+    try {
+      const saved = localStorage.getItem('osf_forms');
+      if (saved) {
+        const forms = JSON.parse(saved);
+        if (forms && forms.length > 0) this.setState({ forms });
+      } else {
+        localStorage.setItem('osf_forms', JSON.stringify(this.state.forms));
+      }
+    } catch(e) {}
+  }
+
+  seed() {
+    return [
+      { id:'OSF-2026-0142', name:'Rajesh Kumar', nameAr:'راجيش كومار', maritalStatus:'married', nationality:'India', passport:'Z3491820', mobile:'+971 50 442 1187', academicQual:'bachelor', yearsExp:'6-10', sectorDept:'operations', assessmentResult:'pass', currentWorkplace:'Emrill Services LLC', securityClearance:'approved', position:'Facilities Technician', entity:'moca', directManager:'Khalid Al Hammadi', contractType:'Outsourced', contractDuration:'2', startDate:'2026-02-01', prevMonthly:7200, prevTicketAnnual:0, prevAccomAnnual:0, prevMedical:0, proposedMonthly:8500, ticketAnnual:3500, accumAnnual:3100, medical:450, status:'Completed', createdBy:'Mariam Al Nuaimi', manager:'Aisha Al Mansoori', created:'2026-01-08', updated:'2026-01-21' },
+      { id:'OSF-2026-0143', name:'Maria Santos', nameAr:'ماريا سانتوس', maritalStatus:'single', nationality:'Philippines', passport:'P8841203', mobile:'+971 55 901 3344', academicQual:'diploma', yearsExp:'3-5', sectorDept:'gov-services', assessmentResult:'pass', currentWorkplace:'Imdaad LLC', securityClearance:'approved', position:'Office Receptionist', entity:'moca', directManager:'Fatima Al Zaabi', contractType:'Service Contract', contractDuration:'1', startDate:'2026-02-15', prevMonthly:5800, prevTicketAnnual:0, prevAccomAnnual:0, prevMedical:0, proposedMonthly:6500, ticketAnnual:2200, accumAnnual:0, medical:450, status:'Completed', createdBy:'Mariam Al Nuaimi', manager:'Khalid Al Hammadi', created:'2026-01-10', updated:'2026-01-18' },
+      { id:'OSF-2026-0151', name:'Mohammed Aslam', nameAr:'محمد أسلم', maritalStatus:'married', nationality:'Pakistan', passport:'AB4420991', mobile:'+971 52 334 7781', academicQual:'highschool', yearsExp:'6-10', sectorDept:'operations', assessmentResult:'pass', currentWorkplace:'Transguard Group', securityClearance:'approved', position:'Security Guard', entity:'moca', directManager:'Aisha Al Mansoori', contractType:'Outsourced', contractDuration:'1', startDate:'2026-03-01', prevMonthly:4500, prevTicketAnnual:0, prevAccomAnnual:0, prevMedical:0, proposedMonthly:5200, ticketAnnual:1900, accumAnnual:0, medical:450, status:'Draft', createdBy:'Sara Al Balushi', manager:'Fatima Al Zaabi', created:'2026-02-02', updated:'2026-02-09' },
+      { id:'OSF-2026-0158', name:'Ahmed Farouk', nameAr:'أحمد فاروق', maritalStatus:'married', nationality:'Egypt', passport:'A1192847', mobile:'+971 56 778 2210', academicQual:'bachelor', yearsExp:'6-10', sectorDept:'it', assessmentResult:'pass', currentWorkplace:'Etisalat Facilities', securityClearance:'approved', position:'IT Support Specialist', entity:'gov-entity', directManager:'Omar Al Suwaidi', contractType:'Service Contract', contractDuration:'3', startDate:'2026-03-10', prevMonthly:9800, prevTicketAnnual:3500, prevAccomAnnual:0, prevMedical:0, proposedMonthly:11000, ticketAnnual:3500, accumAnnual:3100, medical:450, status:'Completed', createdBy:'Sara Al Balushi', manager:'Omar Al Suwaidi', created:'2026-02-12', updated:'2026-02-25' },
+      { id:'OSF-2026-0163', name:'Bibek Thapa', nameAr:'بيبيك ثابا', maritalStatus:'married', nationality:'Nepal', passport:'09421188', mobile:'+971 50 119 6643', academicQual:'highschool', yearsExp:'3-5', sectorDept:'operations', assessmentResult:'pending', currentWorkplace:'Desert Group', securityClearance:'not-approved', position:'Landscaping Worker', entity:'moca', directManager:'Khalid Al Hammadi', contractType:'Outsourced', contractDuration:'1', startDate:'2026-04-01', prevMonthly:3200, prevTicketAnnual:0, prevAccomAnnual:0, prevMedical:0, proposedMonthly:3800, ticketAnnual:1700, accumAnnual:0, medical:450, status:'Draft', createdBy:'Mariam Al Nuaimi', manager:'Aisha Al Mansoori', created:'2026-03-04', updated:'2026-03-04' },
+      { id:'OSF-2026-0170', name:'Shahidul Islam', nameAr:'شهيد الإسلام', maritalStatus:'married', nationality:'Bangladesh', passport:'EH8829104', mobile:'+971 54 220 9981', academicQual:'highschool', yearsExp:'6-10', sectorDept:'operations', assessmentResult:'pass', currentWorkplace:'Al Naboodah', securityClearance:'approved', position:'Driver', entity:'moca', directManager:'Aisha Al Mansoori', contractType:'Outsourced', contractDuration:'2', startDate:'2026-04-15', prevMonthly:4000, prevTicketAnnual:0, prevAccomAnnual:0, prevMedical:0, proposedMonthly:4600, ticketAnnual:1800, accumAnnual:0, medical:450, status:'Completed', createdBy:'Sara Al Balushi', manager:'Khalid Al Hammadi', created:'2026-03-15', updated:'2026-03-28' },
+      { id:'OSF-2026-0177', name:'Lina Haddad', nameAr:'لينا حداد', maritalStatus:'single', nationality:'Jordan', passport:'JK2210384', mobile:'+971 55 663 1129', academicQual:'bachelor', yearsExp:'3-5', sectorDept:'hr', assessmentResult:'pass', currentWorkplace:'Khidmah LLC', securityClearance:'approved', position:'Document Controller', entity:'moca', directManager:'Omar Al Suwaidi', contractType:'Service Contract', contractDuration:'2', startDate:'2026-05-01', prevMonthly:7500, prevTicketAnnual:2600, prevAccomAnnual:0, prevMedical:0, proposedMonthly:8200, ticketAnnual:3500, accumAnnual:0, medical:450, status:'Draft', createdBy:'Mariam Al Nuaimi', manager:'Fatima Al Zaabi', created:'2026-04-06', updated:'2026-04-11' },
+      { id:'OSF-2026-0184', name:'Arun Pillai', nameAr:'أرون بيلاي', maritalStatus:'married', nationality:'India', passport:'M7741209', mobile:'+971 52 884 2017', academicQual:'bachelor', yearsExp:'6-10', sectorDept:'operations', assessmentResult:'pass', currentWorkplace:'ADNH Compass', securityClearance:'approved', position:'Catering Supervisor', entity:'gov-entity', directManager:'Khalid Al Hammadi', contractType:'Service Contract', contractDuration:'2', startDate:'2026-05-20', prevMonthly:6900, prevTicketAnnual:2500, prevAccomAnnual:0, prevMedical:0, proposedMonthly:7600, ticketAnnual:3500, accumAnnual:0, medical:450, status:'Completed', createdBy:'Sara Al Balushi', manager:'Omar Al Suwaidi', created:'2026-05-02', updated:'2026-05-14' },
+      { id:'OSF-2026-0190', name:'Grace Adeyemi', nameAr:'غريس أديمي', maritalStatus:'single', nationality:'Philippines', passport:'P9920147', mobile:'+971 56 110 5582', academicQual:'highschool', yearsExp:'1-2', sectorDept:'operations', assessmentResult:'pending', currentWorkplace:'Farnek Services', securityClearance:'approved', position:'Office Cleaner', entity:'moca', directManager:'Fatima Al Zaabi', contractType:'Outsourced', contractDuration:'1', startDate:'2026-06-01', prevMonthly:3000, prevTicketAnnual:0, prevAccomAnnual:0, prevMedical:0, proposedMonthly:3500, ticketAnnual:1600, accumAnnual:0, medical:450, status:'Draft', createdBy:'Mariam Al Nuaimi', manager:'Aisha Al Mansoori', created:'2026-06-03', updated:'2026-06-03' }
+    ];
+  }
+
+  blank() {
+    const n = this.state.forms.length + 1;
+    return { id:'OSF-2026-0' + (190 + n), name:'', nameAr:'', maritalStatus:'', nationality:'India', passport:'', mobile:'', academicQual:'', yearsExp:'', sectorDept:'', assessmentResult:'', currentWorkplace:'', securityClearance:'', position:'', entity:'', directManager:'', contractType:'Outsourced', contractDuration:'1', startDate:'', prevMonthly:'', prevTicketAnnual:'0', prevAccomAnnual:'0', prevMedical:'0', proposedMonthly:'', ticketAnnual:'0', accumAnnual:'0', medical:'450', status:'Draft', createdBy:'Mariam Al Nuaimi', manager:'Aisha Al Mansoori', created:this.todayISO(), updated:this.todayISO(), _new:true };
+  }
+
+  T() {
+    return {
+      en: {
+        appName:'Outsourced & Service Contract Hiring', appSub:'Hiring Form Management Dashboard',
+        role:'Role', dashboard:'Dashboard', reports:'Reports & Analytics',
+        dashTitle:'Hiring Forms Repository', dashSub:'Central record of all outsourced and service-contract hiring forms.',
+        newForm:'New Hiring Form', filters:'Filters', clear:'Clear all',
+        searchName:'Search employee name…', allStatus:'All statuses', allContract:'All contract types', allNat:'All nationalities', allMgr:'All managers',
+        open:'Open', print:'Print', poweredBy:'Oracle APEX · Audit-enabled',
+        backToDash:'Back to dashboard', saveDraft:'Save Draft', print2:'Print',
+        attachments:'Attachments', upload:'Upload', attachHint:'Signed hiring forms — PDF, DOCX, JPG, PNG. Version history retained.',
+        auditTrail:'Audit Trail & Version History',
+        reportsTitle:'Reports & Analytics', reportsSub:'Hiring activity, status breakdown and projected employment cost.',
+        monthlyTrend:'Monthly Hiring Trend (2026)', statusSplit:'Completed vs Draft', statusFooter:'Forms remain editable in every status.',
+        avgByCat:'Average Proposed Salary by Contract Type', forms:'forms',
+        printPdf:'Print / Save PDF', printedOn:'Printed on', printTitle:'Outsourced / Service Contract Hiring Form',
+        sigDate:'Date:', printFooter:'United Arab Emirates · Ministry of Cabinet Affairs — Confidential HR document.',
+        statuses:{ Completed:'Completed', Draft:'Draft (Saved)' },
+        kTotal:'Total Forms', kCompleted:'Completed', kDraft:'Drafts', kCost:'Projected Annual Cost',
+        kAllForms:'All hiring forms', kReady:'Finalised & approved', kInProgress:'Pending completion', kAcrossForms:'Across all forms',
+        col:{ id:'Form ID', name:'Employee', position:'Position', nat:'Nationality', monthly:'Monthly', annual:'Annual (auto)', status:'Status', by:'Created By', created:'Created', updated:'Updated', actions:'Actions' },
+        tab1:'Candidate Personal Data', tab2:'Employment Data', tab3:'Fees & Costs',
+        newHireToggle:'New Hire (no current position for comparison)',
+        newHireHint:'When enabled, the Current Status column is hidden and differences are not shown.',
+        colItem:'Item', colCurrent:'Current Status', colProposed:'Proposed Status', colDiff:'Differences',
+        groupSalary:'Monthly Salary & Allowances',
+        rowMonthlySalary:'Monthly Salary',
+        rowAirTicket:'Air Ticket Allowance (annual: employee + spouse + children)',
+        rowAccom:'Employee Accommodation Cost (annual)',
+        rowMonthlyTotal:'Total (Monthly)',
+        groupBenefits:'Additional Benefits',
+        rowMedical:'Health Insurance (monthly)',
+        rowEOS:'End of Service Cost (auto-calculated)',
+        rowOutsource:'Outsourcing Company Share 9% (auto-calculated)',
+        rowContractMonthly:'Total Monthly Contract Costs',
+        rowTotalMonthly:'Total Contract Cost (incl. all benefits / monthly)',
+        rowAnnualTotal:'Annual Contract Cost',
+        prevTab:'Previous', nextTab:'Next', pdfExport:'Export PDF', approve:'Approve', sendApproval:'Send for Approval',
+        noChange:'No change',
+        s1:'Candidate Personal Data', s2:'Employment Data',
+        fFullName:'Employee Full Name *', fFullNameAr:'Full Name (Arabic)',
+        fMarital:'Marital Status', fNat:'Nationality', fPassport:'Passport Number', fMobile:'Mobile Number',
+        fAcademic:'Academic Qualification', fYearsExp:'Years of Experience',
+        fSector:'Sector / Department', fAssessment:'Assessment Test Result',
+        fWorkplace:'Current Work Location', fSecurity:'Security Clearance',
+        fProposedTitle:'Proposed Job Title *', fEntity:'Organization / Entity',
+        fDirectManager:'Direct Manager', fContract:'Contract Type', fContractDuration:'Contract Duration (Years)', fStart:'Start Date',
+        photoTitle:'Employee Photo', photoDrop:'Drop photo', photoHint:'Upload a passport-style photograph.', photoSpec:'Drag & drop here or click to browse · JPG / PNG · plain background recommended.', photoUploadBtn:'Upload Employee Photo', photoSizeHint:'JPG or PNG, max 2MB',
+        newHeading:'New Hiring Form', savedDraftMsg:'Form saved as draft.', completedMsg:'Form marked Completed. Fully editable.',
+        roles:{ hr:'HR Team', manager:'Hiring Manager', admin:'Administrator' }
+      },
+      ar: {
+        appName:'توظيف العقود الخارجية وعقود الخدمة', appSub:'لوحة إدارة نماذج التوظيف',
+        role:'الدور', dashboard:'لوحة التحكم', reports:'التقارير والتحليلات',
+        dashTitle:'سجل نماذج التوظيف', dashSub:'السجل المركزي لجميع نماذج توظيف العقود الخارجية وعقود الخدمة.',
+        newForm:'نموذج توظيف جديد', filters:'عوامل التصفية', clear:'مسح الكل',
+        searchName:'بحث باسم الموظف…', allStatus:'جميع الحالات', allContract:'جميع أنواع العقود', allNat:'جميع الجنسيات', allMgr:'جميع المدراء',
+        open:'فتح', print:'طباعة', poweredBy:'أوراكل أبيكس · تدقيق مفعّل',
+        backToDash:'العودة إلى لوحة التحكم', saveDraft:'حفظ', print2:'طباعة',
+        attachments:'المرفقات', upload:'رفع', attachHint:'نماذج التوظيف الموقعة — PDF، DOCX، JPG، PNG. يُحتفظ بسجل الإصدارات.',
+        auditTrail:'سجل التدقيق وتاريخ الإصدارات',
+        reportsTitle:'التقارير والتحليلات', reportsSub:'نشاط التوظيف وتوزيع الحالات والتكلفة المتوقعة.',
+        monthlyTrend:'اتجاه التوظيف الشهري (2026)', statusSplit:'مكتمل مقابل مسودة', statusFooter:'تظل النماذج قابلة للتعديل في جميع الحالات.',
+        avgByCat:'متوسط الراتب المقترح حسب نوع العقد', forms:'نماذج',
+        printPdf:'طباعة / حفظ PDF', printedOn:'طُبع في', printTitle:'نموذج توظيف عقد خارجي / عقد خدمة',
+        sigDate:'التاريخ:', printFooter:'الإمارات العربية المتحدة · وزارة شؤون مجلس الوزراء — وثيقة موارد بشرية سرية.',
+        statuses:{ Completed:'مكتمل', Draft:'مسودة (محفوظة)' },
+        kTotal:'إجمالي النماذج', kCompleted:'مكتملة', kDraft:'مسودات', kCost:'التكلفة السنوية المتوقعة',
+        kAllForms:'جميع نماذج التوظيف', kReady:'نهائية ومعتمدة', kInProgress:'بانتظار الإكمال', kAcrossForms:'لجميع النماذج',
+        col:{ id:'رقم النموذج', name:'الموظف', position:'المنصب', nat:'الجنسية', monthly:'شهري', annual:'سنوي (تلقائي)', status:'الحالة', by:'أنشئ بواسطة', created:'تاريخ الإنشاء', updated:'آخر تحديث', actions:'إجراءات' },
+        tab1:'بيانات المرشح', tab2:'البيانات الوظيفية', tab3:'الرسوم والتكاليف',
+        newHireToggle:'تعيين جديد (لا يوجد وضع وظيفي حالي للمقارنة)',
+        newHireHint:'عند التفعيل، تُخفى خانة "الوضع الحالي" ولا يتم عرض الاختلافات.',
+        colItem:'البند', colCurrent:'الوضع الحالي', colProposed:'الوضع المقترح', colDiff:'الاختلافات',
+        groupSalary:'الراتب والبدلات الشهرية',
+        rowMonthlySalary:'الراتب الشهري',
+        rowAirTicket:'بدل تذاكر السفر (سنوي: موظف + زوج/زوجة + أبناء)',
+        rowAccom:'تكلفة الإقامة للموظف (سنوي)',
+        rowMonthlyTotal:'المجموع (شهري)',
+        groupBenefits:'مزايا إضافية',
+        rowMedical:'التأمين الصحي (شهري)',
+        rowEOS:'تكلفة نهاية الخدمة (محتسبة تلقائياً)',
+        rowOutsource:'نسبة تحمل شركة التعهيد 9% (محتسبة تلقائياً)',
+        rowContractMonthly:'مجموع تكاليف عقد الشهرية',
+        rowTotalMonthly:'التكلفة الإجمالية للعقد (شاملة كافة المزايا / شهرياً)',
+        rowAnnualTotal:'التكلفة السنوية للعقد',
+        prevTab:'السابق', nextTab:'التالي', pdfExport:'تصدير PDF', approve:'اعتماد', sendApproval:'إرسال للموافقة',
+        noChange:'لا تغيير',
+        s1:'بيانات المرشح الشخصية', s2:'البيانات الوظيفية',
+        fFullName:'الاسم الكامل للموظف *', fFullNameAr:'الاسم الكامل (عربي)',
+        fMarital:'الحالة الاجتماعية', fNat:'الجنسية', fPassport:'رقم الجواز', fMobile:'رقم الهاتف',
+        fAcademic:'المؤهل الأكاديمي', fYearsExp:'عدد سنوات الخبرة',
+        fSector:'القطاع / الإدارة', fAssessment:'نتائج اختبار التقييم',
+        fWorkplace:'مكان العمل الحالي', fSecurity:'التدقيق الأمني',
+        fProposedTitle:'المسمى الوظيفي المقترح *', fEntity:'الجهة',
+        fDirectManager:'المدير المباشر', fContract:'نوع العقد', fContractDuration:'مدة العقد (سنوات)', fStart:'تاريخ المباشرة',
+        photoTitle:'صورة الموظف', photoDrop:'أفلت الصورة', photoHint:'قم برفع صورة شخصية بمواصفات جواز السفر.', photoSpec:'اسحب صورة هنا أو انقر للتصفح · JPG / PNG · يُفضّل خلفية بيضاء.', photoUploadBtn:'رفع صورة الموظف', photoSizeHint:'JPG أو PNG، حد أقصى 2MB',
+        newHeading:'نموذج توظيف جديد', savedDraftMsg:'تم حفظ النموذج كمسودة.', completedMsg:'تم تحديد النموذج كمكتمل. يبقى قابلاً للتعديل.',
+        roles:{ hr:'فريق الموارد البشرية', manager:'مدير التوظيف', admin:'مسؤول النظام' }
+      }
+    };
+  }
+
+  n2(v){ return parseFloat(String(v==null?'0':v).replace(/[^0-9.\-]/g,'')) || 0; }
+  annualOf(f){ return this.n2(f.proposedMonthly) * 12; }
+  totalOf(f){
+    const s = this.n2(f.proposedMonthly);
+    const base = s + this.n2(f.ticketAnnual)/12 + this.n2(f.accumAnnual)/12;
+    return (base + this.n2(f.medical) + s*21/360 + s*0.09) * 12;
+  }
+  money(v, ar){ const s = Math.round(v||0).toLocaleString('en-US'); return ar ? (s + ' د.إ') : ('AED ' + s); }
+  todayISO(){ return new Date().toISOString().slice(0,10); }
+  curL(){ const t=this.T(); return this.state.lang==='ar' ? t.ar : t.en; }
+
+  toggleLang = () => this.setState(s => ({ lang: s.lang==='en' ? 'ar' : 'en' }));
+  setRole = (e) => this.setState({ role: e.target.value });
+  goTab1 = () => this.setState({ formTab:1 });
+  goTab2 = () => this.setState({ formTab:2 });
+  goTab3 = () => this.setState({ formTab:3 });
+  nextTab = () => this.setState(s => ({ formTab: Math.min(3, s.formTab+1) }));
+  prevTab = () => this.setState(s => ({ formTab: Math.max(1, s.formTab-1) }));
+  toggleNewHire = () => this.setState(s => ({ isNewHire: !s.isNewHire }));
+
+  go(view){ this.setState({ view, savedNote:'' }); }
+
+  navigate(id, mode) {
+    try {
+      localStorage.setItem('osf_forms', JSON.stringify(this.state.forms));
+      localStorage.setItem('osf_active_id', id || 'new');
+      if (mode) localStorage.setItem('osf_active_mode', mode);
+    } catch(e) {}
+    window.location.href = 'Create%20Hiring%20Form.dc.html';
+  }
+  newForm = () => this.navigate('new');
+  openForm(id){ this.navigate(id); }
+  printForm(id){
+    try {
+      const forms = this.state.forms;
+      const d = forms.find(f=>f.id===id);
+      localStorage.setItem('osf_forms', JSON.stringify(forms));
+      localStorage.setItem('osf_active_id', id);
+      localStorage.setItem('osf_preview_lang', 'en');
+      localStorage.setItem('osf_preview_photo', d && d.photo ? d.photo : '');
+      localStorage.setItem('osf_preview_entity', d && d.entityLogoKey ? d.entityLogoKey : 'moca');
+    } catch(e) {}
+    window.location.href = 'Hiring%20Form%20Preview.dc.html';
+  }
+  backToDash = () => this.setState({ view:'dashboard', savedNote:'' });
+  printActive = () => { this.persist(); this.setState({ printId:this.state.draft.id, view:'print' }); };
+  doPrint = () => window.print();
+
+  setField(k){ return (e) => this.setState(s => ({ draft:{...s.draft,[k]:e.target.value} })); }
+  setPrevMonthly = (e) => this.setState(s => ({ draft:{...s.draft, prevMonthly:e.target.value} }));
+  setProposedMonthly = (e) => this.setState(s => ({ draft:{...s.draft, proposedMonthly:e.target.value} }));
+  setPrevTicket = (e) => this.setState(s => ({ draft:{...s.draft, prevTicketAnnual:e.target.value} }));
+  setPropTicket = (e) => this.setState(s => ({ draft:{...s.draft, ticketAnnual:e.target.value} }));
+  setPrevAccom = (e) => this.setState(s => ({ draft:{...s.draft, prevAccomAnnual:e.target.value} }));
+  setPropAccom = (e) => this.setState(s => ({ draft:{...s.draft, accumAnnual:e.target.value} }));
+  setPrevMedical = (e) => this.setState(s => ({ draft:{...s.draft, prevMedical:e.target.value} }));
+  setPropMedical = (e) => this.setState(s => ({ draft:{...s.draft, medical:e.target.value} }));
+
+  persist(){
+    const d = { ...this.state.draft, updated:this.todayISO() };
+    this.setState(s => {
+      const exists = s.forms.some(f=>f.id===d.id);
+      const forms = exists ? s.forms.map(f=>f.id===d.id?d:f) : [d,...s.forms];
+      return { forms, draft:d, activeId:d.id };
+    });
+  }
+  saveDraft = () => { this.setState(s => ({ draft:{...s.draft,status:'Draft'} }), () => { this.persist(); this.setState({ savedNote:this.curL().savedDraftMsg }); }); };
+  completeForm = () => { this.setState(s => ({ draft:{...s.draft,status:'Completed'} }), () => { this.persist(); this.setState({ savedNote:this.curL().completedMsg }); }); };
+  submitApproval = () => { this.completeForm(); };
+  addAttach = () => {};
+
+  setQ = (e) => this.setState(s => ({filters:{...s.filters,q:e.target.value}}));
+  setFStatus = (e) => this.setState(s => ({filters:{...s.filters,status:e.target.value}}));
+  setFContract = (e) => this.setState(s => ({filters:{...s.filters,contract:e.target.value}}));
+  setFNat = (e) => this.setState(s => ({filters:{...s.filters,nationality:e.target.value}}));
+  setFMgr = (e) => this.setState(s => ({filters:{...s.filters,manager:e.target.value}}));
+  clearFilters = () => this.setState({filters:{q:'',status:'',contract:'',nationality:'',manager:''}});
+
+  renderVals() {
+    const ar = this.state.lang==='ar';
+    const L = this.curL();
+    const dir = ar ? 'rtl' : 'ltr';
+    const startSide = ar ? 'right' : 'left';
+    const startAlign = ar ? 'right' : 'left';
+    const endAlign = ar ? 'left' : 'right';
+    const view = this.state.view;
+    const ft = this.state.formTab;
+    const isNewHire = this.state.isNewHire;
+
+    const statusBg = (st) => st==='Completed' ? '#E4EFE8' : '#F6ECD6';
+    const statusFg = (st) => st==='Completed' ? '#2F6B4F' : '#9A6B16';
+    const statusLabel = (st) => L.statuses[st]||st;
+
+    // --- Dashboard rows ---
+    const fl = this.state.filters;
+    const list = this.state.forms.filter(f => {
+      if (fl.q && !((f.name||'').toLowerCase().includes(fl.q.toLowerCase())||(f.nameAr||'').includes(fl.q))) return false;
+      if (fl.status && f.status!==fl.status) return false;
+      if (fl.contract && f.contractType!==fl.contract) return false;
+      if (fl.nationality && f.nationality!==fl.nationality) return false;
+      if (fl.manager && f.manager!==fl.manager) return false;
+      return true;
+    });
+    const rows = list.map(f => ({
+      id:f.id, name:ar?(f.nameAr||f.name):f.name, position:f.position, nationality:f.nationality,
+      monthly:this.money(this.n2(f.proposedMonthly),ar), annual:this.money(this.annualOf(f),ar),
+      statusLabel:statusLabel(f.status), statusBg:statusBg(f.status), statusFg:statusFg(f.status),
+      createdBy:f.createdBy, created:f.created, updated:f.updated,
+      open:()=>this.openForm(f.id), print:()=>this.printForm(f.id)
+    }));
+
+    const all = this.state.forms;
+    const completed = all.filter(f=>f.status==='Completed').length;
+    const drafts = all.length - completed;
+    const totalCost = all.reduce((a,f)=>a+this.totalOf(f),0);
+    const kpis = [
+      { label:L.kTotal, value:String(all.length), note:L.kAllForms, accent:'#9E7B2F' },
+      { label:L.kCompleted, value:String(completed), note:L.kReady, accent:'#2F6B4F' },
+      { label:L.kDraft, value:String(drafts), note:L.kInProgress, accent:'#9A6B16' }
+    ];
+    const cols = [
+      {label:L.col.id,align:startAlign},{label:L.col.name,align:startAlign},{label:L.col.position,align:startAlign},{label:L.col.nat,align:startAlign},
+      {label:L.col.monthly,align:endAlign},{label:L.col.annual,align:endAlign},{label:L.col.status,align:startAlign},{label:L.col.by,align:startAlign},
+      {label:L.col.created,align:startAlign},{label:L.col.updated,align:startAlign},{label:L.col.actions,align:startAlign}
+    ];
+    const natOpts = [...new Set(all.map(f=>f.nationality))];
+    const mgrOpts = [...new Set(all.map(f=>f.manager))];
+    const statusOpts = [{value:'Completed',label:L.statuses.Completed},{value:'Draft',label:L.statuses.Draft}];
+    const contractOpts = [{value:'Outsourced',label:ar?'عقد تعهيد':'Outsourced'},{value:'Service Contract',label:ar?'عقد خدمات':'Service Contract'}];
+
+    // --- Tabs ---
+    const tabS = (n) => {
+      const active = ft===n;
+      return { border: active?'#9E7B2F':'transparent', color: active?'#9E7B2F':'#6B6657', numBg: active?'#9E7B2F':'#E6E1D4', numFg: active?'#fff':'#4A463C' };
+    };
+    const t1=tabS(1), t2=tabS(2), t3=tabS(3);
+
+    // --- Form field helpers ---
+    const d = this.state.draft||{};
+    const fld = (key,label,opts={}) => ({
+      key, label, value: d[key]==null?'':d[key], handler:this.setField(key),
+      isSelect:!!opts.select, isInput:!opts.select, inputType:opts.type||'text',
+      span:opts.span||1, ph:opts.ph||'', options:opts.options||[]
+    });
+
+    const allNats = [...new Set(['India','Philippines','Pakistan','Egypt','Bangladesh','Nepal','Jordan','UAE','Saudi Arabia','Lebanon','Sri Lanka',...natOpts])];
+    const sel = (opts) => opts;
+    const maritalOpts = sel([{value:'',label:ar?'اختر...':'Select...'},{value:'single',label:ar?'أعزب/عزباء':'Single'},{value:'married',label:ar?'متزوج/ة':'Married'},{value:'divorced',label:ar?'مطلق/ة':'Divorced'},{value:'widowed',label:ar?'أرمل/ة':'Widowed'}]);
+    const academicOpts = sel([{value:'',label:ar?'اختر...':'Select...'},{value:'highschool',label:ar?'ثانوية عامة':'High School'},{value:'diploma',label:ar?'دبلوم':'Diploma'},{value:'bachelor',label:ar?'بكالوريوس':'Bachelor\'s'},{value:'master',label:ar?'ماجستير':'Master\'s'},{value:'phd',label:ar?'دكتوراه':'PhD'},{value:'other',label:ar?'أخرى':'Other'}]);
+    const yearsOpts = sel([{value:'',label:ar?'اختر...':'Select...'},{value:'lt1',label:ar?'أقل من سنة':'Less than 1 year'},{value:'1-2',label:ar?'1-2 سنة':'1–2 years'},{value:'3-5',label:ar?'3-5 سنوات':'3–5 years'},{value:'6-10',label:ar?'6-10 سنوات':'6–10 years'},{value:'10+',label:ar?'أكثر من 10 سنوات':'10+ years'}]);
+    const sectorOpts = sel([{value:'',label:ar?'اختر...':'Select...'},{value:'gov-services',label:ar?'خدمات حكومية':'Government Services'},{value:'operations',label:ar?'العمليات':'Operations'},{value:'finance',label:ar?'المالية':'Finance'},{value:'it',label:ar?'تقنية المعلومات':'Information Technology'},{value:'hr',label:ar?'الموارد البشرية':'Human Resources'},{value:'legal',label:ar?'الشؤون القانونية':'Legal Affairs'},{value:'other',label:ar?'أخرى':'Other'}]);
+    const assessmentOpts = sel([{value:'',label:ar?'اختر...':'Select...'},{value:'acceptable',label:ar?'مقبول':'Acceptable'},{value:'very-good',label:ar?'جيد جداً':'Very Good'},{value:'excellent',label:ar?'ممتاز':'Excellent'}]);
+    const securityOpts = sel([{value:'',label:ar?'اختر...':'Select...'},{value:'approved',label:ar?'تمت الموافقة':'Approved'},{value:'not-approved',label:ar?'لم يتم الموافقة':'Not Approved'}]);
+    const entityOpts = sel([{value:'',label:ar?'اختر...':'Select...'},{value:'moca',label:ar?'وزارة شؤون مجلس الوزراء':'Ministry of Cabinet Affairs'},{value:'mof',label:ar?'وزارة المالية':'Ministry of Finance'},{value:'gov-entity',label:ar?'جهة حكومية أخرى':'Other Government Entity'},{value:'private',label:ar?'شركة خاصة':'Private Company'},{value:'other',label:ar?'أخرى':'Other'}]);
+    const durationOpts = sel([{value:'1',label:ar?'سنة واحدة':'1 Year'},{value:'2',label:ar?'سنتان':'2 Years'},{value:'3',label:ar?'3 سنوات':'3 Years'},{value:'4',label:ar?'4 سنوات':'4 Years'},{value:'5',label:ar?'5 سنوات':'5 Years'}]);
+
+    const tab1Sections = [{ num:'1', title:L.s1, fields:[
+      fld('name',L.fFullName),
+      fld('maritalStatus',L.fMarital,{select:true,options:maritalOpts}),
+      fld('nationality',L.fNat,{select:true,options:allNats.map(n=>({value:n,label:n}))}),
+      fld('academicQual',L.fAcademic,{select:true,options:academicOpts}),
+      fld('yearsExp',L.fYearsExp,{select:true,options:yearsOpts}),
+      fld('sectorDept',L.fSector,{select:true,options:sectorOpts}),
+      fld('assessmentResult',L.fAssessment,{select:true,options:assessmentOpts}),
+      fld('currentWorkplace',L.fWorkplace),
+      fld('securityClearance',L.fSecurity,{select:true,options:securityOpts})
+    ]}];
+
+    const tab2Sections = [{ num:'2', title:L.s2, fields:[
+      fld('position',L.fProposedTitle), fld('entity',L.fEntity,{select:true,options:entityOpts}),
+      fld('sectorDept',L.fSector,{select:true,options:sectorOpts}),
+      fld('directManager',L.fDirectManager), fld('contractType',L.fContract,{select:true,options:contractOpts}),
+      fld('contractDuration',L.fContractDuration,{select:true,options:durationOpts})
+    ]}];
+
+    // --- Comparison calculations ---
+    const prevSal = this.n2(d.prevMonthly);
+    const prevTkt = this.n2(d.prevTicketAnnual);
+    const prevAcc = this.n2(d.prevAccomAnnual);
+    const prevMed = this.n2(d.prevMedical);
+    const propSal = this.n2(d.proposedMonthly);
+    const propTkt = this.n2(d.ticketAnnual);
+    const propAcc = this.n2(d.accumAnnual);
+    const propMed = this.n2(d.medical);
+
+    const prevBase = prevSal + prevTkt/12 + prevAcc/12;
+    const propBase = propSal + propTkt/12 + propAcc/12;
+    const prevEOS = prevSal*21/360;
+    const propEOS = propSal*21/360;
+    const prevOS = prevSal*0.09;
+    const propOS = propSal*0.09;
+    const prevCont = prevBase + prevMed + prevEOS + prevOS;
+    const propCont = propBase + propMed + propEOS + propOS;
+    const prevAnn = prevCont*12;
+    const propAnn = propCont*12;
+
+    const diffStr = (prop, prev) => {
+      if (isNewHire) return '—';
+      const delta = prop - prev;
+      if (Math.abs(delta)<0.01) return L.noChange;
+      return (delta>0?'+':'')+this.money(delta,ar);
+    };
+    const diffCol = (prop, prev) => {
+      const delta = prop - prev;
+      if (Math.abs(delta)<0.01) return '#8C877A';
+      return delta>0 ? '#2F6B4F' : '#B22234';
+    };
+    const showCurrent = !isNewHire;
+    const colCount = showCurrent ? 4 : 3;
+
+    const cmp = {
+      prevMonthly: d.prevMonthly||'', propMonthly: d.proposedMonthly||'',
+      prevTicket: d.prevTicketAnnual||'', propTicket: d.ticketAnnual||'',
+      prevAccom: d.prevAccomAnnual||'', propAccom: d.accumAnnual||'',
+      prevMedical: d.prevMedical||'', propMedical: d.medical||'',
+      salDiff:diffStr(propSal,prevSal), salDiffCol:diffCol(propSal,prevSal),
+      tktDiff:diffStr(propTkt,prevTkt), tktDiffCol:diffCol(propTkt,prevTkt),
+      accDiff:diffStr(propAcc,prevAcc), accDiffCol:diffCol(propAcc,prevAcc),
+      prevBaseDisplay:this.money(prevBase,ar), propBaseDisplay:this.money(propBase,ar),
+      baseDiff:diffStr(propBase,prevBase), baseDiffCol:diffCol(propBase,prevBase),
+      prevEOSDisplay:this.money(prevEOS,ar), propEOSDisplay:this.money(propEOS,ar),
+      eosDiff:diffStr(propEOS,prevEOS), eosDiffCol:diffCol(propEOS,prevEOS),
+      prevOSDisplay:this.money(prevOS,ar), propOSDisplay:this.money(propOS,ar),
+      osDiff:diffStr(propOS,prevOS), osDiffCol:diffCol(propOS,prevOS),
+      prevContDisplay:this.money(prevCont,ar), propContDisplay:this.money(propCont,ar),
+      contDiff:diffStr(propCont,prevCont), contDiffCol:diffCol(propCont,prevCont),
+      prevAnnDisplay:this.money(prevAnn,ar), propAnnDisplay:this.money(propAnn,ar),
+      annDiff:diffStr(propAnn,prevAnn), annDiffCol:diffCol(propAnn,prevAnn)
+    };
+
+    // --- Form meta ---
+    const formHeading = d._new ? L.newHeading : (ar?(d.nameAr||d.name):d.name)||L.newHeading;
+    const formMeta = (d.id||'') + ' · ' + (d.createdBy||'') + ' · ' + (d.created||'');
+    const attachments = d.status==='Completed' ? [
+      {ext:'PDF',name:ar?'نموذج التوظيف الموقّع.pdf':'Signed_Hiring_Form.pdf',meta:ar?'248 ك.ب':'248 KB',date:d.updated||''},
+      {ext:'PDF',name:ar?'السيرة الذاتية.pdf':'CV.pdf',meta:ar?'520 ك.ب':'520 KB',date:d.created||''},
+      {ext:'PDF',name:ar?'عرض الأسعار.pdf':'Quotation.pdf',meta:ar?'185 ك.ب':'185 KB',date:d.updated||''}
+    ] : [
+      {ext:'PDF',name:ar?'السيرة الذاتية.pdf':'CV.pdf',meta:ar?'520 ك.ب':'520 KB',date:d.created||''},
+      {ext:'PDF',name:ar?'عرض الأسعار.pdf':'Quotation.pdf',meta:ar?'—':'—',date:d.created||''}
+    ];
+    const audit = [
+      {action:ar?'إنشاء النموذج':'Form created',by:d.createdBy||'',time:(d.created||'')+' 09:14',dot:'#9E7B2F'},
+      {action:ar?'تحديث البيانات':'Data updated',by:d.manager||'',time:(d.created||'')+' 11:02',dot:'#7C1733'},
+      ...(d.status==='Completed'?[{action:ar?'تحديد النموذج كمكتمل':'Marked Completed',by:d.manager||'',time:(d.updated||'')+' 15:38',dot:'#2F6B4F'}]:[{action:ar?'حُفظ كمسودة':'Saved as Draft',by:d.createdBy||'',time:(d.updated||'')+' 16:20',dot:'#9A6B16'}])
+    ];
+
+    // --- Reports ---
+    const avgSalary = all.length ? all.reduce((a,f)=>a+this.n2(f.proposedMonthly),0)/all.length : 0;
+    const reportKpis = [
+      {label:L.kTotal,value:String(all.length),note:L.kAllForms,color:'#23211C'},
+      {label:L.kCompleted,value:completed+' / '+all.length,note:L.kReady,color:'#2F6B4F'},
+      {label:ar?'التكلفة السنوية':'Annual Cost',value:this.money(totalCost,ar),note:L.kAcrossForms,color:'#7C1733'},
+      {label:ar?'متوسط الراتب الشهري':'Avg Monthly Salary',value:this.money(avgSalary,ar),note:ar?'لكل موظف':'Per employee',color:'#9E7B2F'}
+    ];
+    const monthsEn=['Jan','Feb','Mar','Apr','May','Jun'], monthsAr=['يناير','فبراير','مارس','أبريل','مايو','يونيو'];
+    const counts=[0,0,0,0,0,0];
+    all.forEach(f=>{const m=parseInt((f.created||'').slice(5,7),10)-1; if(m>=0&&m<6)counts[m]++;});
+    const maxC=Math.max(1,...counts);
+    const monthly=counts.map((c,i)=>({count:c,h:Math.round(20+(c/maxC)*130),label:(ar?monthsAr:monthsEn)[i]}));
+    const statusData=[
+      {label:L.statuses.Completed,count:completed,pct:Math.round(completed/all.length*100),color:'#2F6B4F'},
+      {label:L.statuses.Draft,count:drafts,pct:Math.round(drafts/all.length*100),color:'#9A6B16'}
+    ];
+    const cats=['Outsourced','Service Contract'];
+    const catData=cats.map(c=>{const g=all.filter(f=>f.contractType===c);const avg=g.length?g.reduce((a,f)=>a+this.n2(f.proposedMonthly),0)/g.length:0;return{c,avg,n:g.length};});
+    const maxAvg=Math.max(1,...catData.map(c=>c.avg));
+    const catAvg=catData.map(c=>({cat:c.c==='Outsourced'?(ar?'عقد تعهيد':'Outsourced'):(ar?'عقد خدمات':'Service Contract'),avg:this.money(c.avg,ar),w:Math.round(20+(c.avg/maxAvg)*78),n:c.n}));
+
+    // --- Print ---
+    const pf=this.state.forms.find(f=>f.id===this.state.printId)||d;
+    const dash='—';
+    const m_=this.money.bind(this);
+    const pPrevSal=this.n2(pf.prevMonthly), pPropSal=this.n2(pf.proposedMonthly);
+    const pPropTkt=this.n2(pf.ticketAnnual), pPropAcc=this.n2(pf.accumAnnual), pPropMed=this.n2(pf.medical);
+    const pPropBase=pPropSal+pPropTkt/12+pPropAcc/12;
+    const pPropEOS=pPropSal*21/360, pPropOS=pPropSal*0.09;
+    const pPropCont=pPropBase+pPropMed+pPropEOS+pPropOS;
+    const pPropAnn=pPropCont*12;
+    const printSections=[
+      {title:L.s1, rows:[{k:L.fFullName,v:pf.name||dash},{k:L.fYearsExp,v:pf.yearsExp||dash},{k:L.fMarital,v:pf.maritalStatus||dash},{k:L.fNat,v:pf.nationality||dash},{k:L.fAcademic,v:pf.academicQual||dash},{k:L.fSector,v:pf.sectorDept||dash},{k:L.fAssessment,v:pf.assessmentResult||dash},{k:L.fWorkplace,v:pf.currentWorkplace||dash},{k:L.fSecurity,v:pf.securityClearance||dash}]},
+      {title:L.s2, rows:[{k:L.fProposedTitle,v:pf.position||dash},{k:L.fEntity,v:pf.entity||dash},{k:L.fDirectManager,v:pf.directManager||dash},{k:L.fContract,v:pf.contractType||dash},{k:L.fContractDuration,v:(pf.contractDuration||dash)+' '+( ar?'سنوات':'yrs')},{k:L.fStart,v:pf.startDate||dash}]},
+      {title:L.tab3, rows:[{k:L.rowMonthlySalary,v:m_(pPropSal,ar)},{k:L.rowAirTicket,v:m_(pPropTkt,ar)},{k:L.rowAccom,v:m_(pPropAcc,ar)},{k:L.rowMedical,v:m_(pPropMed,ar)},{k:L.rowEOS,v:m_(pPropEOS,ar)},{k:L.rowOutsource,v:m_(pPropOS,ar)},{k:L.rowContractMonthly,v:m_(pPropCont,ar)}]}
+    ];
+    const signatures=[{role:ar?'المدير المباشر':'Direct Manager',name:pf.directManager||''},{role:ar?'رئيس القطاع':'Sector Head',name:''}];
+    const printDoc={id:pf.id||'',today:this.todayISO(),contractType:pf.contractType||'',status:statusLabel(pf.status),total:m_(pPropAnn,ar)};
+
+    // --- App tabs ---
+    const appTab=(key,label)=>({label,go:()=>this.go(key),border:view===key?'#9E7B2F':'transparent',color:view===key?'#9E7B2F':'#6B6657'});
+    const tabs=[appTab('dashboard',L.dashboard),appTab('reports',L.reports)];
+
+    return {
+      dir, startSide, startAlign, endAlign,
+      fontStack: ar?"'IBM Plex Sans Arabic',system-ui,sans-serif":"'IBM Plex Sans',system-ui,sans-serif",
+      L, langBtn: ar?'English':'العربية',
+      role:this.state.role, roleLabel:L.roles[this.state.role], roleOptions:[{value:'hr',label:L.roles.hr},{value:'manager',label:L.roles.manager},{value:'admin',label:L.roles.admin}],
+      setRole:this.setRole, toggleLang:this.toggleLang, tabs,
+      userName: ar?'مريم النعيمي':'Mariam Al Nuaimi', userInitials: ar?'م':'MN',
+      isDashboard:view==='dashboard', isForm:view==='form', isReports:view==='reports', isPrint:view==='print',
+      kpis, cols, rows, rowCountLabel:rows.length+(ar?' نموذج':' forms'),
+      filters:fl, setQ:this.setQ, setFStatus:this.setFStatus, setFContract:this.setFContract, setFNat:this.setFNat, setFMgr:this.setFMgr, clearFilters:this.clearFilters,
+      statusOpts, contractOpts, natOpts, mgrOpts, newForm:this.newForm, backToDash:this.backToDash,
+      isTab1:ft===1, isTab2:ft===2, isTab3:ft===3,
+      tab1Border:t1.border, tab1Color:t1.color, tab1NumBg:t1.numBg, tab1NumFg:t1.numFg,
+      tab2Border:t2.border, tab2Color:t2.color, tab2NumBg:t2.numBg, tab2NumFg:t2.numFg,
+      tab3Border:t3.border, tab3Color:t3.color, tab3NumBg:t3.numBg, tab3NumFg:t3.numFg,
+      goTab1:this.goTab1, goTab2:this.goTab2, goTab3:this.goTab3, nextTab:this.nextTab, prevTab:this.prevTab,
+      tab1Sections, tab2Sections,
+      formHeading, formMeta,
+      draftStatusLabel:statusLabel(d.status||'Draft'), draftStatusBg:statusBg(d.status||'Draft'), draftStatusFg:statusFg(d.status||'Draft'),
+      savedNote:this.state.savedNote, saveDraft:this.saveDraft, completeForm:this.completeForm, printActive:this.printActive,
+      submitApproval:this.submitApproval, addAttach:this.addAttach,
+      toggleNewHire:this.toggleNewHire, toggleBg:isNewHire?'#9E7B2F':'#D9D3C2', toggleKnob:isNewHire?'21px':'3px',
+      showCurrent, colCount, cmp,
+      setPrevMonthly:this.setPrevMonthly, setProposedMonthly:this.setProposedMonthly,
+      setPrevTicket:this.setPrevTicket, setPropTicket:this.setPropTicket,
+      setPrevAccom:this.setPrevAccom, setPropAccom:this.setPropAccom,
+      setPrevMedical:this.setPrevMedical, setPropMedical:this.setPropMedical,
+      attachments, audit,
+      reportKpis, monthly, statusData, catAvg,
+      printDoc, printSections, signatures, doPrint:this.doPrint
+    };
+  }
+}
+</script>
+</body>
+</html>

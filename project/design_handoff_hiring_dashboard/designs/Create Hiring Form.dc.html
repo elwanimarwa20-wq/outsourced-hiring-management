@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  ::-webkit-scrollbar { height: 9px; width: 9px; }
+  ::-webkit-scrollbar-thumb { background: #cfc9b8; border-radius: 6px; }
+  @media print {
+    .no-print { display: none !important; }
+    .print-sheet { box-shadow: none !important; }
+    body { background: #fff !important; }
+  }
+</style>
+</helmet>
+
+<div dir="{{ dir }}" style="min-height:100vh;background:#F2F0E9;color:#23211C;font-family:{{ fontStack }};-webkit-font-smoothing:antialiased;">
+
+  <!-- Sticky top chrome -->
+  <div class="no-print" style="position:sticky;top:0;z-index:200;">
+    <div style="height:4px;background:linear-gradient(90deg,#7C1733 0%,#9E7B2F 60%,#C7A24A 100%);"></div>
+    <header style="background:#fff;border-bottom:1px solid #E6E1D4;padding:0 28px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;min-height:72px;">
+      <button onClick="{{ backToDash }}" style="font-family:inherit;font-size:13px;font-weight:600;color:#7C1733;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;padding:0;">{{ L.backToDash }}</button>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 486px; height: 92px">
+        <div style="height:56px;width:220px;background-image:{{ entityLogoCss }};background-size:contain;background-repeat:no-repeat;background-position:center;"></div>
+        <select value="{{ selectedEntityLogo }}" onChange="{{ setEntityLogo }}" style="font-family:inherit;font-size:10.5px;font-weight:600;color:#9E7B2F;background:transparent;border:none;border-bottom:1px dashed #C7A24A;cursor:pointer;outline:none;padding:0 2px;">
+          <sc-for list="{{ entityLogoOpts }}" as="opt" hint-placeholder-count="3"><option value="{{ opt.value }}">{{ opt.label }}</option></sc-for>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;flex-wrap:wrap;">
+        <sc-if value="{{ savedNote }}" hint-placeholder-val="{{ false }}">
+          <span style="font-size:12px;font-weight:600;color:#2F6B4F;display:flex;align-items:center;gap:5px;">✓ {{ savedNote }}</span>
+        </sc-if>
+        <button onClick="{{ toggleLang }}" style-hover="background:#F3ECDC;" style="font-family:inherit;font-size:12px;font-weight:600;color:#23211C;background:#fff;border:1px solid #E6E1D4;border-radius:8px;padding:7px 12px;cursor:pointer;">{{ langBtn }}</button>
+      </div>
+    </header>
+  </div>
+
+  <!-- ===== FORM VIEW ===== -->
+  <sc-if value="{{ isFormView }}" hint-placeholder-val="{{ true }}">
+  <main style="padding:20px 28px 60px;max-width:1100px;margin:0 auto;">
+
+    <!-- Title row -->
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+      <h1 style="font-size:21px;font-weight:700;margin:0;letter-spacing:-0.02em;">{{ formHeading }}</h1>
+      <span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:20px;background:{{ statusBg }};color:{{ statusFg }};"><span style="width:6px;height:6px;border-radius:50%;background:{{ statusFg }};"></span>{{ statusLabel }}</span>
+    </div>
+    <p style="font-size:12px;color:#8C877A;margin:0 0 16px;">{{ formMeta }}</p>
+
+
+    <!-- Form Tab Bar -->
+    <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;margin-bottom:18px;display:flex;overflow:hidden;">
+      <button onClick="{{ goTab1 }}" style="font-family:inherit;flex:1;font-size:13px;font-weight:600;padding:14px 10px;border:none;border-bottom:3px solid {{ t1Border }};color:{{ t1Color }};background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <span style="width:24px;height:24px;border-radius:50%;background:{{ t1NumBg }};color:{{ t1NumFg }};display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none;">1</span>{{ L.tab1 }}
+      </button>
+      <div style="width:1px;background:#E6E1D4;"></div>
+      <button onClick="{{ goTab2 }}" style="font-family:inherit;flex:1;font-size:13px;font-weight:600;padding:14px 10px;border:none;border-bottom:3px solid {{ t2Border }};color:{{ t2Color }};background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <span style="width:24px;height:24px;border-radius:50%;background:{{ t2NumBg }};color:{{ t2NumFg }};display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none;">2</span>{{ L.tab2 }}
+      </button>
+      <div style="width:1px;background:#E6E1D4;"></div>
+      <button onClick="{{ goTab3 }}" style="font-family:inherit;flex:1;font-size:13px;font-weight:600;padding:14px 10px;border:none;border-bottom:3px solid {{ t3Border }};color:{{ t3Color }};background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <span style="width:24px;height:24px;border-radius:50%;background:{{ t3NumBg }};color:{{ t3NumFg }};display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none;">3</span>{{ L.tab3 }}
+      </button>
+    </div>
+
+    <!-- TAB 1: Candidate Personal Data -->
+    <sc-if value="{{ isTab1 }}" hint-placeholder-val="{{ true }}">
+
+      <!-- Photo -->
+      <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;margin-bottom:16px;overflow:hidden;">
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid #F0EDE3;background:#FBFAF6;">
+          <div style="width:28px;height:28px;border-radius:7px;background:#7C1733;color:#fff;display:flex;align-items:center;justify-content:center;">📷</div>
+          <div style="font-size:14.5px;font-weight:700;">{{ L.photoTitle }}</div>
+        </div>
+        <div style="padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
+            <label style="font-family:inherit;font-size:13px;font-weight:600;color:#fff;background:#9E7B2F;border:none;border-radius:9px;padding:10px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;" style-hover="background:#8C6B26;">
+              📷 {{ L.photoUploadBtn }}
+              <input type="file" accept="image/jpeg,image/png" onChange="{{ onPhotoUpload }}" style="display:none;">
+            </label>
+            <div style="font-size:12px;color:#8C877A;">{{ L.photoSizeHint }}</div>
+          </div>
+          <div style="width:80px;height:80px;border-radius:50%;border:2px solid #E6E1D4;background:#F2F0E9;overflow:hidden;flex:none;display:flex;align-items:center;justify-content:center;font-size:28px;background-image:{{ photoBgCss }};background-size:cover;background-position:center;">
+            <sc-if value="{{ noPhoto }}" hint-placeholder-val="{{ true }}">
+              <span>👤</span>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal fields -->
+      <sc-for list="{{ tab1Sections }}" as="sec" hint-placeholder-count="1">
+        <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;margin-bottom:16px;overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid #F0EDE3;background:#FBFAF6;">
+            <div style="width:28px;height:28px;border-radius:7px;background:#9E7B2F;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">{{ sec.num }}</div>
+            <div style="font-size:14.5px;font-weight:700;">{{ sec.title }}</div>
+          </div>
+          <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <sc-for list="{{ sec.fields }}" as="fld" hint-placeholder-count="6">
+              <div style="grid-column:span {{ fld.span }};">
+                <label style="display:block;font-size:11.5px;font-weight:600;color:#6B6657;margin-bottom:6px;">{{ fld.label }}</label>
+                <sc-if value="{{ fld.isSelect }}" hint-placeholder-val="{{ false }}">
+                  <select value="{{ fld.value }}" onChange="{{ fld.handler }}" style="font-family:inherit;font-size:13.5px;padding:10px 12px;border:1px solid #E6E1D4;border-radius:8px;outline:none;width:100%;background:#fff;">
+                    <sc-for list="{{ fld.options }}" as="op" hint-placeholder-count="3"><option value="{{ op.value }}">{{ op.label }}</option></sc-for>
+                  </select>
+                </sc-if>
+                <sc-if value="{{ fld.isInput }}" hint-placeholder-val="{{ true }}">
+                  <input value="{{ fld.value }}" onInput="{{ fld.handler }}" type="{{ fld.inputType }}" placeholder="{{ fld.ph }}" style="font-family:inherit;font-size:13.5px;padding:10px 12px;border:1px solid #E6E1D4;border-radius:8px;outline:none;width:100%;">
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+
+      <!-- Attachments (Step 1) -->
+      <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;margin-bottom:16px;overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #F0EDE3;background:#FBFAF6;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:28px;height:28px;border-radius:7px;background:#7C1733;color:#fff;display:flex;align-items:center;justify-content:center;">📎</div>
+            <div style="font-size:14.5px;font-weight:700;">{{ L.attachments }}</div>
+          </div>
+        </div>
+        <div style="padding:6px 20px 16px;">
+          <div style="font-size:12px;color:#8C877A;padding:8px 0 4px;">{{ L.attachHint }}</div>
+          <sc-for list="{{ attachRows }}" as="a" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #F0EDE3;">
+              <div style="width:38px;height:38px;border-radius:8px;background:{{ a.iconBg }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:{{ a.iconColor }};flex:none;">{{ a.icon }}</div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:13px;font-weight:600;color:#23211C;">{{ a.label }}</div>
+                <div style="font-size:11.5px;color:#8C877A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ a.statusLine }}</div>
+              </div>
+              <sc-if value="{{ a.noFile }}" hint-placeholder-val="{{ true }}">
+                <label style="font-family:inherit;font-size:12px;font-weight:600;color:#9E7B2F;background:#FBF6EA;border:1px solid #EDE2C7;border-radius:8px;padding:7px 14px;cursor:pointer;white-space:nowrap;" style-hover="background:#F3ECDC;">
+                  ＋ {{ L.attachBtn }}
+                  <input type="file" accept=".pdf,.docx,.doc,.jpg,.jpeg,.png" onChange="{{ a.onAttach }}" style="display:none;">
+                </label>
+              </sc-if>
+              <sc-if value="{{ a.hasFile }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:center;gap:6px;flex:none;">
+                  <label style="font-family:inherit;font-size:12px;font-weight:600;color:#4A463C;background:#fff;border:1px solid #D9D3C2;border-radius:8px;padding:7px 12px;cursor:pointer;white-space:nowrap;" style-hover="background:#F2F0E9;">
+                    {{ L.replaceBtn }}
+                    <input type="file" accept=".pdf,.docx,.doc,.jpg,.jpeg,.png" onChange="{{ a.onAttach }}" style="display:none;">
+                  </label>
+                  <button onClick="{{ a.onRemove }}" style="font-family:inherit;font-size:12px;font-weight:600;color:#8B1A1A;background:#FDEAEA;border:1px solid #F5C0C0;border-radius:8px;padding:7px 12px;cursor:pointer;white-space:nowrap;" style-hover="background:#F8D8D8;">{{ L.removeBtn }}</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:6px;">
+        <button onClick="{{ saveDraft }}" style-hover="background:#F2F0E9;" style="font-family:inherit;font-size:13px;font-weight:600;color:#4A463C;background:#fff;border:1px solid #D9D3C2;border-radius:9px;padding:10px 18px;cursor:pointer;">💾 {{ L.saveDraft }}</button>
+        <button onClick="{{ goTab2 }}" style-hover="background:#8C6B26;" style="font-family:inherit;font-size:13px;font-weight:600;color:#fff;background:#9E7B2F;border:none;border-radius:9px;padding:10px 20px;cursor:pointer;">{{ L.nextTab }} →</button>
+      </div>
+    </sc-if>
+
+    <!-- TAB 2: Employment Data -->
+    <sc-if value="{{ isTab2 }}" hint-placeholder-val="{{ false }}">
+      <sc-for list="{{ tab2Sections }}" as="sec" hint-placeholder-count="1">
+        <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;margin-bottom:16px;overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid #F0EDE3;background:#FBFAF6;">
+            <div style="width:28px;height:28px;border-radius:7px;background:#9E7B2F;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">{{ sec.num }}</div>
+            <div style="font-size:14.5px;font-weight:700;">{{ sec.title }}</div>
+          </div>
+          <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <sc-for list="{{ sec.fields }}" as="fld" hint-placeholder-count="4">
+              <div style="grid-column:span {{ fld.span }};">
+                <label style="display:block;font-size:11.5px;font-weight:600;color:#6B6657;margin-bottom:6px;">{{ fld.label }}</label>
+                <sc-if value="{{ fld.isSelect }}" hint-placeholder-val="{{ false }}">
+                  <select value="{{ fld.value }}" onChange="{{ fld.handler }}" style="font-family:inherit;font-size:13.5px;padding:10px 12px;border:1px solid #E6E1D4;border-radius:8px;outline:none;width:100%;background:#fff;">
+                    <sc-for list="{{ fld.options }}" as="op" hint-placeholder-count="3"><option value="{{ op.value }}">{{ op.label }}</option></sc-for>
+                  </select>
+                </sc-if>
+                <sc-if value="{{ fld.isInput }}" hint-placeholder-val="{{ true }}">
+                  <input value="{{ fld.value }}" onInput="{{ fld.handler }}" type="{{ fld.inputType }}" placeholder="{{ fld.ph }}" style="font-family:inherit;font-size:13.5px;padding:10px 12px;border:1px solid #E6E1D4;border-radius:8px;outline:none;width:100%;">
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+        <button onClick="{{ goTab1 }}" style-hover="background:#F2F0E9;" style="font-family:inherit;font-size:13px;font-weight:600;color:#4A463C;background:#fff;border:1px solid #D9D3C2;border-radius:9px;padding:10px 18px;cursor:pointer;">← {{ L.prevTab }}</button>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button onClick="{{ saveDraft }}" style-hover="background:#F2F0E9;" style="font-family:inherit;font-size:13px;font-weight:600;color:#4A463C;background:#fff;border:1px solid #D9D3C2;border-radius:9px;padding:10px 18px;cursor:pointer;">💾 {{ L.saveDraft }}</button>
+          <button onClick="{{ goTab3 }}" style-hover="background:#8C6B26;" style="font-family:inherit;font-size:13px;font-weight:600;color:#fff;background:#9E7B2F;border:none;border-radius:9px;padding:10px 20px;cursor:pointer;">{{ L.nextTab }} →</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- TAB 3: Fees & Costs -->
+    <sc-if value="{{ isTab3 }}" hint-placeholder-val="{{ false }}">
+
+      <!-- New hire toggle -->
+      <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;padding:16px 20px;margin-bottom:16px;">
+        <div style="display:flex;align-items:flex-start;gap:14px;">
+          <div onClick="{{ toggleNewHire }}" style="cursor:pointer;flex:none;margin-top:2px;">
+            <div style="width:44px;height:26px;border-radius:13px;background:{{ toggleBg }};position:relative;transition:background .2s;">
+              <div style="position:absolute;top:3px;left:{{ toggleKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:left .2s;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:13.5px;font-weight:700;">{{ L.newHireToggle }}</div>
+            <div style="font-size:12px;color:#8C877A;margin-top:3px;">{{ L.newHireHint }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison table -->
+      <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;overflow:hidden;margin-bottom:16px;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="background:#F8F6F0;">
+              <th style="padding:11px 14px;font-weight:700;color:#4A463C;text-align:{{ startAlign }};border-bottom:2px solid #E6E1D4;width:38%;">{{ L.colItem }}</th>
+              <sc-if value="{{ showCurrent }}" hint-placeholder-val="{{ true }}">
+                <th style="padding:11px 14px;font-weight:700;color:#4A463C;text-align:{{ endAlign }};border-bottom:2px solid #E6E1D4;width:18%;">{{ L.colCurrent }}</th>
+              </sc-if>
+              <th style="padding:11px 14px;font-weight:700;color:#9E7B2F;text-align:{{ endAlign }};border-bottom:2px solid #E6E1D4;width:20%;">{{ L.colProposed }}</th>
+              <th style="padding:11px 14px;font-weight:700;color:#4A463C;text-align:{{ endAlign }};border-bottom:2px solid #E6E1D4;width:18%;">{{ L.colDiff }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#F3EDE3;">
+              <td colspan="{{ colCount }}" style="padding:9px 14px;font-size:12px;font-weight:700;color:#7A5E1F;letter-spacing:0.02em;">{{ L.groupSalary }}</td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0EDE3;">
+              <td style="padding:9px 14px;color:#332F28;">{{ L.rowMonthlySalary }}</td>
+              <sc-if value="{{ showCurrent }}" hint-placeholder-val="{{ true }}">
+                <td style="padding:6px 10px;"><input type="number" value="{{ cmp.prevMonthly }}" onInput="{{ setPrevMonthly }}" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid #E6E1D4;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};"></td>
+              </sc-if>
+              <td style="padding:6px 10px;"><input type="number" value="{{ cmp.propMonthly }}" onInput="{{ setProposedMonthly }}" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1.5px solid #C7A24A;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};background:#FFFDF5;"></td>
+              <td style="padding:9px 14px;font-weight:600;color:{{ cmp.salDiffCol }};text-align:{{ endAlign }};font-variant-numeric:tabular-nums;">{{ cmp.salDiff }}</td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0EDE3;">
+              <td style="padding:9px 14px;color:#332F28;">{{ L.rowAirTicket }}</td>
+              <sc-if value="{{ showCurrent }}" hint-placeholder-val="{{ true }}">
+                <td style="padding:6px 10px;">
+                  <input type="number" value="{{ cmp.prevTicket }}" onInput="{{ setPrevTicket }}" placeholder="0" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid #E6E1D4;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};">
+                </td>
+              </sc-if>
+              <td style="padding:6px 10px;">
+                <input type="number" value="{{ cmp.propTicket }}" onInput="{{ setPropTicket }}" placeholder="0" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1.5px solid #C7A24A;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};background:#FFFDF5;">
+              </td>
+              <td style="padding:9px 14px;font-weight:600;color:{{ cmp.tktDiffCol }};text-align:{{ endAlign }};font-variant-numeric:tabular-nums;">{{ cmp.tktDiff }}</td>
+            </tr>
+            <sc-if value="{{ showFamilyBreakdown }}" hint-placeholder-val="{{ false }}">
+              <sc-for list="{{ ticketRows }}" as="fm" hint-placeholder-count="1">
+                <tr style="background:#FAFAF8;border-bottom:1px solid #F2EEE6;">
+                  <td style="padding:6px 14px 6px 18px;font-size:12px;color:#8C877A;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <sc-if value="{{ fm.removable }}" hint-placeholder-val="{{ false }}">
+                        <button onClick="{{ fm.onRemove }}" title="{{ L.removeMember }}" style="width:20px;height:20px;flex:none;border-radius:50%;border:1px solid #F0C8C8;background:#FDEAEA;color:#B22234;font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">×</button>
+                      </sc-if>
+                      <span>↳ {{ fm.label }}</span>
+                    </div>
+                  </td>
+                  <sc-if value="{{ showCurrent }}" hint-placeholder-val="{{ false }}">
+                    <td style="padding:4px 8px;"><input type="number" value="{{ fm.prevVal }}" onInput="{{ fm.setPrev }}" placeholder="0" style="font-family:inherit;font-size:12px;padding:6px 9px;border:1px solid #E6E1D4;border-radius:6px;outline:none;width:100%;text-align:{{ endAlign }};"></td>
+                  </sc-if>
+                  <td style="padding:4px 8px;"><input type="number" value="{{ fm.amtVal }}" onInput="{{ fm.setAmt }}" placeholder="0" style="font-family:inherit;font-size:12px;padding:6px 9px;border:1.5px solid #C7A24A;border-radius:6px;outline:none;width:100%;text-align:{{ endAlign }};background:#FFFDF5;"></td>
+                  <td></td>
+                </tr>
+              </sc-for>
+              <tr style="background:#F7F3EA;border-bottom:1px solid #EDE2C7;">
+                <td colspan="{{ colCount }}" style="padding:7px 14px 7px 18px;">
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <sc-if value="{{ ticketCanAddSpouse }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ ticketAddSpouse }}" style="font-family:inherit;font-size:11.5px;font-weight:600;color:#9E7B2F;background:#fff;border:1px dashed #C7A24A;border-radius:7px;padding:5px 12px;cursor:pointer;">＋ {{ L.addSpouse }}</button>
+                    </sc-if>
+                    <sc-if value="{{ ticketCanAddChild }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ ticketAddChild }}" style="font-family:inherit;font-size:11.5px;font-weight:600;color:#9E7B2F;background:#fff;border:1px dashed #C7A24A;border-radius:7px;padding:5px 12px;cursor:pointer;">＋ {{ L.addChild }}</button>
+                    </sc-if>
+                  </div>
+                </td>
+              </tr>
+            </sc-if>
+            <tr style="border-bottom:1px solid #F0EDE3;">
+              <td style="padding:7px 14px;">
+                <select value="{{ visaType }}" onChange="{{ setVisaType }}" style="font-family:inherit;font-size:13px;font-weight:600;color:#332F28;padding:8px 10px;border:1px solid #D9D3C2;border-radius:7px;outline:none;background:#fff;cursor:pointer;width:100%;">
+                  <option value="visa-labour">{{ L.visaLabourCard }}</option>
+                  <option value="labour-only">{{ L.labourCardOnly }}</option>
+                </select>
+              </td>
+              <sc-if value="{{ showCurrent }}" hint-placeholder-val="{{ true }}">
+                <td style="padding:6px 10px;">
+                  <input type="number" value="{{ cmp.prevAccom }}" onInput="{{ setPrevAccom }}" placeholder="0" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid #E6E1D4;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};">
+                </td>
+              </sc-if>
+              <td style="padding:6px 10px;">
+                <input type="number" value="{{ cmp.propAccom }}" onInput="{{ setPropAccom }}" placeholder="0" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1.5px solid #C7A24A;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};background:#FFFDF5;">
+              </td>
+              <td style="padding:9px 14px;font-weight:600;color:{{ cmp.accDiffCol }};text-align:{{ endAlign }};font-variant-numeric:tabular-nums;">{{ cmp.accDiff }}</td>
+            </tr>
+            <sc-if value="{{ showFamilyBreakdown }}" hint-placeholder-val="{{ false }}">
+              <sc-for list="{{ visaRows }}" as="fm" hint-placeholder-count="1">
+                <tr style="background:#FAFAF8;border-bottom:1px solid #F2EEE6;">
+                  <td style="padding:6px 14px 6px 18px;font-size:12px;color:#8C877A;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <sc-if value="{{ fm.removable }}" hint-placeholder-val="{{ false }}">
+                        <button onClick="{{ fm.onRemove }}" title="{{ L.removeMember }}" style="width:20px;height:20px;flex:none;border-radius:50%;border:1px solid #F0C8C8;background:#FDEAEA;color:#B22234;font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">×</button>
+                      </sc-if>
+                      <span>↳ {{ fm.label }}</span>
+                    </div>
+                  </td>
+                  <sc-if value="{{ showCurrent }}" hint-placeholder-val="{{ false }}">
+                    <td style="padding:4px 8px;"><input type="number" value="{{ fm.prevVal }}" onInput="{{ fm.setPrev }}" placeholder="0" style="font-family:inherit;font-size:12px;padding:6px 9px;border:1px solid #E6E1D4;border-radius:6px;outline:none;width:100%;text-align:{{ endAlign }};"></td>
+                  </sc-if>
+                  <td style="padding:4px 8px;"><input type="number" value="{{ fm.amtVal }}" onInput="{{ fm.setAmt }}" placeholder="0" style="font-family:inherit;font-size:12px;padding:6px 9px;border:1.5px solid #C7A24A;border-radius:6px;outline:none;width:100%;text-align:{{ endAlign }};background:#FFFDF5;"></td>
+                  <td></td>
+                </tr>
+              </sc-for>
+              <tr style="background:#F7F3EA;border-bottom:1px solid #EDE2C7;">
+                <td colspan="{{ colCount }}" style="padding:7px 14px 7px 18px;">
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <sc-if value="{{ visaCanAddSpouse }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ visaAddSpouse }}" style="font-family:inherit;font-size:11.5px;font-weight:600;color:#9E7B2F;background:#fff;border:1px dashed #C7A24A;border-radius:7px;padding:5px 12px;cursor:pointer;">＋ {{ L.addSpouse }}</button>
+                    </sc-if>
+                    <sc-if value="{{ visaCanAddChild }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ visaAddChild }}" style="font-family:inherit;font-size:11.5px;font-weight:600;color:#9E7B2F;background:#fff;border:1px dashed #C7A24A;border-radius:7px;padding:5px 12px;cursor:pointer;">＋ {{ L.addChild }}</button>
+                    </sc-if>
+                  </div>
+                </td>
+              </tr>
+            </sc-if>
+            <tr style="background:#FBF6EA;border-bottom:1px solid #EDE2C7;">
+              <td style="padding:11px 14px;font-weight:700;color:#7A5E1F;">{{ L.rowMonthlyTotal }}</td>
+              <sc-if value="{{ showCurrent }}" hint-placeholder-val="{{ true }}">
+                <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:600;color:#7A5E1F;font-variant-numeric:tabular-nums;">{{ cmp.prevBaseDisplay }}</td>
+              </sc-if>
+              <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:700;color:#9E7B2F;font-variant-numeric:tabular-nums;">{{ cmp.propBaseDisplay }}</td>
+              <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:700;color:{{ cmp.baseDiffCol }};font-variant-numeric:tabular-nums;">{{ cmp.baseDiff }}</td>
+            </tr>
+            <tr style="background:#F3EDE3;">
+              <td colspan="{{ colCount }}" style="padding:9px 14px;font-size:12px;font-weight:700;color:#7A5E1F;letter-spacing:0.02em;">{{ L.groupBenefits }}</td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0EDE3;">
+              <td style="padding:9px 14px;color:#332F28;">{{ L.rowMedical }}</td>
+              <sc-if value="{{ showCurrent }}" hint-placeholder-val="{{ true }}">
+                <td style="padding:6px 10px;">
+                  <input type="number" value="{{ cmp.prevMedical }}" onInput="{{ setPrevMedical }}" placeholder="0" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid #E6E1D4;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};">
+                </td>
+              </sc-if>
+              <td style="padding:6px 10px;">
+                <input type="number" value="{{ cmp.propMedical }}" onInput="{{ setPropMedical }}" placeholder="0" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1.5px solid #C7A24A;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};background:#FFFDF5;">
+              </td>
+              <td style="padding:9px 14px;font-weight:600;color:{{ cmp.medDiffCol }};text-align:{{ endAlign }};font-variant-numeric:tabular-nums;">{{ cmp.medDiff }}</td>
+            </tr>
+            <sc-if value="{{ showFamilyBreakdown }}" hint-placeholder-val="{{ false }}">
+              <sc-for list="{{ medicalRows }}" as="fm" hint-placeholder-count="1">
+                <tr style="background:#FAFAF8;border-bottom:1px solid #F2EEE6;">
+                  <td style="padding:6px 14px 6px 18px;font-size:12px;color:#8C877A;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <sc-if value="{{ fm.removable }}" hint-placeholder-val="{{ false }}">
+                        <button onClick="{{ fm.onRemove }}" title="{{ L.removeMember }}" style="width:20px;height:20px;flex:none;border-radius:50%;border:1px solid #F0C8C8;background:#FDEAEA;color:#B22234;font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">×</button>
+                      </sc-if>
+                      <span>↳ {{ fm.label }}</span>
+                    </div>
+                  </td>
+                  <sc-if value="{{ showCurrent }}" hint-placeholder-val="{{ false }}">
+                    <td style="padding:4px 8px;"><input type="number" value="{{ fm.prevVal }}" onInput="{{ fm.setPrev }}" placeholder="0" style="font-family:inherit;font-size:12px;padding:6px 9px;border:1px solid #E6E1D4;border-radius:6px;outline:none;width:100%;text-align:{{ endAlign }};"></td>
+                  </sc-if>
+                  <td style="padding:4px 8px;"><input type="number" value="{{ fm.amtVal }}" onInput="{{ fm.setAmt }}" placeholder="0" style="font-family:inherit;font-size:12px;padding:6px 9px;border:1.5px solid #C7A24A;border-radius:6px;outline:none;width:100%;text-align:{{ endAlign }};background:#FFFDF5;"></td>
+                  <td></td>
+                </tr>
+              </sc-for>
+              <tr style="background:#F7F3EA;border-bottom:1px solid #EDE2C7;">
+                <td colspan="{{ colCount }}" style="padding:7px 14px 7px 18px;">
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <sc-if value="{{ medicalCanAddSpouse }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ medicalAddSpouse }}" style="font-family:inherit;font-size:11.5px;font-weight:600;color:#9E7B2F;background:#fff;border:1px dashed #C7A24A;border-radius:7px;padding:5px 12px;cursor:pointer;">＋ {{ L.addSpouse }}</button>
+                    </sc-if>
+                    <sc-if value="{{ medicalCanAddChild }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ medicalAddChild }}" style="font-family:inherit;font-size:11.5px;font-weight:600;color:#9E7B2F;background:#fff;border:1px dashed #C7A24A;border-radius:7px;padding:5px 12px;cursor:pointer;">＋ {{ L.addChild }}</button>
+                    </sc-if>
+                  </div>
+                </td>
+              </tr>
+            </sc-if>
+            <tr style="border-bottom:1px solid #F0EDE3;">
+              <td style="padding:9px 14px;color:#332F28;">{{ L.rowEOS }}</td>
+              <sc-if value="{{ showCurrent }}" hint-placeholder-val="{{ true }}">
+                <td style="padding:6px 10px;"><input type="number" value="{{ cmp.prevEOS }}" onInput="{{ setPrevEOS }}" placeholder="0" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid #E6E1D4;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};"></td>
+              </sc-if>
+              <td style="padding:6px 10px;"><input type="number" value="{{ cmp.propEOS }}" onInput="{{ setPropEOS }}" placeholder="0" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1.5px solid #C7A24A;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};background:#FFFDF5;"></td>
+              <td style="padding:9px 14px;font-weight:600;color:{{ cmp.eosDiffCol }};text-align:{{ endAlign }};font-variant-numeric:tabular-nums;">{{ cmp.eosDiff }}</td>
+            </tr>
+            <tr style="border-bottom:1px solid #EDE2C7;">
+              <td style="padding:7px 14px;">
+                <select value="{{ osRate }}" onChange="{{ setOsRate }}" style="font-family:inherit;font-size:13px;font-weight:600;color:#332F28;padding:8px 10px;border:1px solid #D9D3C2;border-radius:7px;outline:none;background:#fff;cursor:pointer;width:100%;">
+                  <option value="9">{{ L.rowOutsource9 }}</option>
+                  <option value="18">{{ L.rowOutsource18 }}</option>
+                </select>
+              </td>
+              <sc-if value="{{ showCurrent }}" hint-placeholder-val="{{ true }}">
+                <td style="padding:6px 10px;"><input type="number" value="{{ cmp.prevOS }}" onInput="{{ setPrevOS }}" placeholder="0" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid #E6E1D4;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};"></td>
+              </sc-if>
+              <td style="padding:6px 10px;"><input type="number" value="{{ cmp.propOS }}" onInput="{{ setPropOS }}" placeholder="0" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1.5px solid #C7A24A;border-radius:7px;outline:none;width:100%;text-align:{{ endAlign }};background:#FFFDF5;"></td>
+              <td style="padding:9px 14px;font-weight:600;color:{{ cmp.osDiffCol }};text-align:{{ endAlign }};font-variant-numeric:tabular-nums;">{{ cmp.osDiff }}</td>
+            </tr>
+            <tr style="background:#FBF6EA;border-bottom:1px solid #EDE2C7;">
+              <td style="padding:11px 14px;font-weight:700;color:#7A5E1F;">{{ L.rowContractMonthly }}</td>
+              <sc-if value="{{ showCurrent }}" hint-placeholder-val="{{ true }}">
+                <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:600;color:#7A5E1F;font-variant-numeric:tabular-nums;">{{ cmp.prevContDisplay }}</td>
+              </sc-if>
+              <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:700;color:#9E7B2F;font-variant-numeric:tabular-nums;">{{ cmp.propContDisplay }}</td>
+              <td style="padding:11px 14px;text-align:{{ endAlign }};font-weight:700;color:{{ cmp.contDiffCol }};font-variant-numeric:tabular-nums;">{{ cmp.contDiff }}</td>
+            </tr>
+            <tr style="background:#7C1733;">
+              <td style="padding:13px 14px;font-weight:700;color:#fff;">{{ L.rowAnnualTotal }}</td>
+              <sc-if value="{{ showCurrent }}" hint-placeholder-val="{{ true }}">
+                <td style="padding:13px 14px;text-align:{{ endAlign }};color:#FDDDC9;font-weight:600;font-variant-numeric:tabular-nums;">{{ cmp.prevAnnDisplay }}</td>
+              </sc-if>
+              <td style="padding:13px 14px;text-align:{{ endAlign }};font-weight:700;color:#FFE6B0;font-size:15px;font-variant-numeric:tabular-nums;">{{ cmp.propAnnDisplay }}</td>
+              <td style="padding:13px 14px;text-align:{{ endAlign }};font-weight:700;color:#fff;font-variant-numeric:tabular-nums;">{{ cmp.annDiff }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="background:#FBFAF6;border:1px solid #EDE2C7;border-radius:12px;padding:16px 20px;margin-top:6px;">
+        <div style="font-size:12px;font-weight:600;color:#9E7B2F;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+          <span style="width:20px;height:20px;border-radius:50%;background:#9E7B2F;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex:none;">✓</span>
+          {{ L.finalStepTitle }}
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <button onClick="{{ goTab2 }}" style-hover="background:#F2F0E9;" style="font-family:inherit;font-size:13px;font-weight:600;color:#4A463C;background:#fff;border:1px solid #D9D3C2;border-radius:9px;padding:10px 18px;cursor:pointer;">← {{ L.prevTab }}</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button onClick="{{ saveDraft }}" style-hover="background:#F2F0E9;" style="font-family:inherit;font-size:13px;font-weight:600;color:#4A463C;background:#fff;border:1px solid #D9D3C2;border-radius:9px;padding:11px 18px;cursor:pointer;">💾 {{ L.saveDraft }}</button>
+            <button onClick="{{ printActive }}" style-hover="background:#6A0F2A;" style="font-family:inherit;font-size:13.5px;font-weight:700;color:#fff;background:#7C1733;border:none;border-radius:9px;padding:11px 24px;cursor:pointer;box-shadow:0 2px 8px rgba(124,23,51,.25);display:flex;align-items:center;gap:8px;">📄 {{ L.previewDoc }} →</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- Audit trail (existing forms only) -->
+    <sc-if value="{{ isExisting }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#fff;border:1px solid #E6E1D4;border-radius:12px;margin-top:16px;overflow:hidden;">
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid #F0EDE3;background:#FBFAF6;">
+        <div style="width:28px;height:28px;border-radius:7px;background:#4A463C;color:#fff;display:flex;align-items:center;justify-content:center;">↻</div>
+        <div style="font-size:14.5px;font-weight:700;">{{ L.auditTrail }}</div>
+      </div>
+      <div style="padding:16px 20px;">
+        <sc-for list="{{ audit }}" as="ev" hint-placeholder-count="3">
+          <div style="display:flex;gap:12px;padding-bottom:14px;">
+            <div style="width:9px;height:9px;border-radius:50%;background:{{ ev.dot }};margin-top:4px;flex:none;box-shadow:0 0 0 1.5px {{ ev.dot }};"></div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;">{{ ev.action }}</div>
+              <div style="font-size:11.5px;color:#8C877A;margin-top:2px;">{{ ev.by }} · {{ ev.time }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+  </main>
+  </sc-if>
+
+  <!-- ===== PRINT VIEW ===== -->
+  <sc-if value="{{ isPrint }}" hint-placeholder-val="{{ false }}">
+  
+  </sc-if>
+
+</div>
+
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="#F2F0E9"></rect>
+  <rect x="0" y="0" width="400" height="76" fill="#fff"></rect>
+  <rect x="0" y="0" width="400" height="4" fill="#9E7B2F"></rect>
+  <rect x="110" y="100" width="180" height="260" rx="12" fill="#fff" stroke="#E6E1D4" stroke-width="1"></rect>
+  <rect x="110" y="100" width="180" height="32" rx="12" fill="#FBFAF6"></rect>
+  <rect x="126" y="112" width="8" height="8" rx="4" fill="#9E7B2F"></rect>
+  <rect x="142" y="113" width="80" height="6" rx="3" fill="#4A463C"></rect>
+  <rect x="126" y="148" width="148" height="8" rx="4" fill="#E6E1D4"></rect>
+  <rect x="126" y="164" width="100" height="8" rx="4" fill="#E6E1D4"></rect>
+  <rect x="126" y="188" width="148" height="8" rx="4" fill="#E6E1D4"></rect>
+  <rect x="126" y="204" width="80" height="8" rx="4" fill="#E6E1D4"></rect>
+  <rect x="126" y="228" width="148" height="28" rx="6" fill="#7C1733"></rect>
+  <rect x="136" y="238" width="60" height="8" rx="3" fill="#FFE6B0"></rect>
+</svg>
+</template>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:860}}">
+class Component extends DCLogic {
+  state = {
+    lang: 'en', view: 'form',
+    formTab: 1, isNewHire: false,
+    showChildrenTicket: true, showChildrenVisa: true, showChildrenMedical: true,
+    selectedEntityLogo: 'moca',
+    photoDataUrl: null,
+    osRate: '9',
+    approvalSent: false,
+    draft: null, forms: [], savedNote: ''
+  };
+
+  componentDidMount() {
+    try {
+      const saved = localStorage.getItem('osf_forms');
+      const forms = saved ? JSON.parse(saved) : this.seed();
+      const activeId = localStorage.getItem('osf_active_id') || 'new';
+      const mode = localStorage.getItem('osf_active_mode') || 'form';
+      try { localStorage.removeItem('osf_active_mode'); } catch(e) {}
+      let draft;
+      if (activeId === 'new') {
+        draft = this.blank(forms.length);
+      } else {
+        draft = forms.find(f => f.id === activeId);
+        if (!draft) draft = this.blank(forms.length);
+      }
+      this.setState({ forms, draft, view: mode });
+    } catch(e) {
+      const forms = this.seed();
+      this.setState({ forms, draft: this.blank(0) });
+    }
+  }
+
+  seed() {
+    return [
+      { id:'OSF-2026-0142', name:'Rajesh Kumar', nameAr:'راجيش كومار', maritalStatus:'married', nationality:'India', passport:'Z3491820', mobile:'+971 50 442 1187', academicQual:'bachelor', yearsExp:'6-10', sectorDept:'operations', assessmentResult:'pass', currentWorkplace:'Emrill Services LLC', securityClearance:'approved', position:'Facilities Technician', entity:'moca', directManager:'Khalid Al Hammadi', contractType:'Outsourced', contractDuration:'2', startDate:'2026-02-01', prevMonthly:7200, prevTicketAnnual:0, prevAccomAnnual:0, prevMedical:0, proposedMonthly:8500, ticketAnnual:3500, accumAnnual:3100, medical:450, status:'Completed', createdBy:'Mariam Al Nuaimi', manager:'Aisha Al Mansoori', created:'2026-01-08', updated:'2026-01-21' },
+      { id:'OSF-2026-0143', name:'Maria Santos', nameAr:'ماريا سانتوس', maritalStatus:'single', nationality:'Philippines', passport:'P8841203', mobile:'+971 55 901 3344', academicQual:'diploma', yearsExp:'3-5', sectorDept:'gov-services', assessmentResult:'pass', currentWorkplace:'Imdaad LLC', securityClearance:'approved', position:'Office Receptionist', entity:'moca', directManager:'Fatima Al Zaabi', contractType:'Service Contract', contractDuration:'1', startDate:'2026-02-15', prevMonthly:5800, prevTicketAnnual:0, prevAccomAnnual:0, prevMedical:0, proposedMonthly:6500, ticketAnnual:2200, accumAnnual:0, medical:450, status:'Completed', createdBy:'Mariam Al Nuaimi', manager:'Khalid Al Hammadi', created:'2026-01-10', updated:'2026-01-18' },
+      { id:'OSF-2026-0151', name:'Mohammed Aslam', nameAr:'محمد أسلم', maritalStatus:'married', nationality:'Pakistan', passport:'AB4420991', mobile:'+971 52 334 7781', academicQual:'highschool', yearsExp:'6-10', sectorDept:'operations', assessmentResult:'pass', currentWorkplace:'Transguard Group', securityClearance:'approved', position:'Security Guard', entity:'moca', directManager:'Aisha Al Mansoori', contractType:'Outsourced', contractDuration:'1', startDate:'2026-03-01', prevMonthly:4500, prevTicketAnnual:0, prevAccomAnnual:0, prevMedical:0, proposedMonthly:5200, ticketAnnual:1900, accumAnnual:0, medical:450, status:'Draft', createdBy:'Sara Al Balushi', manager:'Fatima Al Zaabi', created:'2026-02-02', updated:'2026-02-09' }
+    ];
+  }
+
+  blank(count) {
+    return { id:'OSF-2026-0' + (191 + count), name:'', maritalStatus:'', nationality:'India', passport:'', mobile:'', academicQual:'', yearsExp:'', sectorDept:'', assessmentResult:'', currentWorkplace:'', securityClearance:'', position:'', entity:'', directManager:'', contractType:'Outsourced', contractDuration:'1', startDate:'', prevMonthly:'', prevTicketAnnual:'0', prevAccomAnnual:'0', prevMedical:'0', proposedMonthly:'', ticketAnnual:'0', accumAnnual:'0', medical:'450', status:'Draft', createdBy:'Mariam Al Nuaimi', manager:'Aisha Al Mansoori', created:this.todayISO(), updated:this.todayISO(), _new:true };
+  }
+
+  T() {
+    return {
+      en: {
+        backToDash:'← Back to Dashboard', backToForm:'← Back to Form',
+        saveDraft:'Save Draft', markComplete:'Mark Completed', print:'Print / PDF',
+        printPdf:'Print / Save PDF', printedOn:'Printed on', printTitle:'Outsourced / Service Contract Hiring Form',
+        sigDate:'Date:', printFooter:'United Arab Emirates · Ministry of Cabinet Affairs — Confidential HR document.',
+        tab1:'Candidate Personal Data', tab2:'Employment Data', tab3:'Fees & Costs',
+        nextTab:'Next', prevTab:'Previous',
+        newHireToggle:'New Hire (no current position for comparison)',
+        newHireHint:'When enabled, the Current Status column is hidden.',
+        colItem:'Item', colCurrent:'Current Status', colProposed:'Proposed Status', colDiff:'Differences',
+        groupSalary:'Monthly Salary & Allowances',
+        rowMonthlySalary:'Monthly Salary',
+        rowAirTicket:'Air Ticket Allowance (annual)',
+        rowAccom:'Accommodation Cost (annual)',
+        rowMonthlyTotal:'Total (Monthly)',
+        groupBenefits:'Additional Benefits',
+        rowMedical:'Health Insurance (monthly)',
+        rowEOS:'End of Service',
+        rowOutsource9:'Outsourcing Co. Share 9%', rowOutsource18:'Outsourcing Co. Share 18%',
+        rowContractMonthly:'Total Monthly Contract Cost',
+        rowAnnualTotal:'Annual Contract Cost',
+        visaLabourCard:'Visa + Labour Card', labourCardOnly:'Labour Card Only',
+        familyBreakdownTitle:'Family Allowances Breakdown', memberLabel:'Family Member', colTicket:'Air Ticket (AED/yr)', colVisa:'Visa Cost (AED)', colMedical:'Medical Ins. (AED/mo)', familyTotalLabel:'Total', familyFeedNote:'These totals feed automatically into the comparison table.',
+        noChange:'No change',
+        addSpouse:'Add Spouse', addChild:'Add Child', removeMember:'Remove',
+        attachments:'Attachments', upload:'Upload', attachHint:'Attach the required documents — PDF, DOCX, JPG or PNG.',
+        attachBtn:'Attach', replaceBtn:'Replace', removeBtn:'Remove', attachPending:'Not attached yet',
+        auditTrail:'Audit Trail',
+        dropLogo:'🏛 Drop entity logo here',
+        photoTitle:'Employee Photo', photoUploadBtn:'Upload Employee Photo', photoSizeHint:'JPG or PNG, max 2MB',
+        photoDrop:'👤',
+        childrenTitle:'Children Information', numChildren:'Number of Children', childrenNote:'Note', childrenHint:'Number of children affects air ticket allowance calculation (employee + spouse + children).',
+        statuses:{ Completed:'Completed', Draft:'Draft' },
+        savedMsg:'Saved as draft.', completedMsg:'Marked as Completed.',
+        approvalSentMsg:'✓ Form submitted to HR Director for approval.',
+        sendApprovalBtn:'Send for HR Approval',
+        previewDoc:'Preview Document',
+        finalStepTitle:'Final Step — Preview the hiring document, then send it for approval',
+        s1:'Candidate Personal Data', s2:'Employment Data',
+        fFullName:'Employee Full Name *', fMarital:'Marital Status', fNat:'Nationality',
+        fAcademic:'Academic Qualification', fYearsExp:'Years of Experience',
+        fSector:'Sector / Department', fAssessment:'Assessment Test Result',
+        fWorkplace:'Current Work Location', fSecurity:'Security Clearance',
+        fProposedTitle:'Proposed Job Title *', fEntity:'Organization / Entity',
+        fSector2:'Sector / Department', fDirectManager:'Direct Manager',
+        fContract:'Contract Type', fContractDuration:'Contract Duration (Years)'
+      },
+      ar: {
+        backToDash:'← العودة إلى لوحة التحكم', backToForm:'← العودة إلى النموذج',
+        saveDraft:'حفظ', markComplete:'تحديد كمكتمل', print:'طباعة / PDF',
+        printPdf:'طباعة / حفظ PDF', printedOn:'طُبع في', printTitle:'نموذج توظيف عقد خارجي / عقد خدمة',
+        sigDate:'التاريخ:', printFooter:'الإمارات العربية المتحدة · وزارة شؤون مجلس الوزراء — وثيقة سرية.',
+        tab1:'بيانات المرشح', tab2:'البيانات الوظيفية', tab3:'الرسوم والتكاليف',
+        nextTab:'التالي', prevTab:'السابق',
+        newHireToggle:'تعيين جديد (لا وضع حالي للمقارنة)',
+        newHireHint:'عند التفعيل تُخفى خانة الوضع الحالي.',
+        colItem:'البند', colCurrent:'الوضع الحالي', colProposed:'الوضع المقترح', colDiff:'الاختلافات',
+        groupSalary:'الراتب والبدلات الشهرية',
+        rowMonthlySalary:'الراتب الشهري',
+        rowAirTicket:'بدل تذاكر السفر (سنوي)',
+        rowAccom:'تكلفة الإقامة (سنوي)',
+        rowMonthlyTotal:'المجموع (شهري)',
+        groupBenefits:'مزايا إضافية',
+        rowMedical:'التأمين الصحي (شهري)',
+        rowEOS:'نهاية الخدمة',
+        rowOutsource9:'نسبة شركة التعهيد 9%', rowOutsource18:'نسبة شركة التعهيد 18%',
+        rowContractMonthly:'مجموع تكاليف العقد الشهرية',
+        rowAnnualTotal:'التكلفة السنوية للعقد',
+        visaLabourCard:'فيزا + بطاقة عمل', labourCardOnly:'بطاقة عمل فقط',
+        familyBreakdownTitle:'تفاصيل مزايا الأسرة', memberLabel:'فرد الأسرة', colTicket:'بدل التذكرة (درهم/سنوي)', colVisa:'تكلفة الفيزا (درهم)', colMedical:'التأمين الصحي (درهم/شهري)', familyTotalLabel:'المجموع', familyFeedNote:'تُغذّى المجاميع تلقائياً في جدول المقارنة.',
+        noChange:'لا تغيير',
+        addSpouse:'إضافة الزوج/الزوجة', addChild:'إضافة طفل', removeMember:'حذف',
+        attachments:'المرفقات', upload:'رفع', attachHint:'أرفق المستندات المطلوبة — PDF، DOCX، JPG أو PNG.',
+        attachBtn:'إرفاق', replaceBtn:'استبدال', removeBtn:'حذف', attachPending:'لم يتم الإرفاق بعد',
+        auditTrail:'سجل التدقيق',
+        dropLogo:'🏛 أفلت شعار الجهة هنا',
+        photoTitle:'صورة الموظف', photoUploadBtn:'رفع صورة الموظف', photoSizeHint:'JPG أو PNG، حد أقصى 2MB',
+        photoDrop:'👤',
+        childrenTitle:'معلومات الأبناء', numChildren:'عدد الأطفال', childrenNote:'ملاحظة', childrenHint:'عدد الأطفال يؤثر على احتساب بدل تذاكر السفر (موظف + زوج/زوجة + أبناء).',
+        statuses:{ Completed:'مكتمل', Draft:'مسودة' },
+        savedMsg:'تم الحفظ كمسودة.', completedMsg:'تم تحديده كمكتمل.',
+        approvalSentMsg:'✓ تم إرسال النموذج إلى مدير الموارد البشرية للاعتماد.',
+        sendApprovalBtn:'إرسال للاعتماد',
+        previewDoc:'معاينة الوثيقة',
+        finalStepTitle:'الخطوة الأخيرة — عاين وثيقة التوظيف ثم أرسلها للاعتماد',
+        s1:'بيانات المرشح الشخصية', s2:'البيانات الوظيفية',
+        fFullName:'الاسم الكامل للموظف *', fMarital:'الحالة الاجتماعية', fNat:'الجنسية',
+        fAcademic:'المؤهل الأكاديمي', fYearsExp:'عدد سنوات الخبرة',
+        fSector:'القطاع / الإدارة', fAssessment:'نتائج اختبار التقييم',
+        fWorkplace:'مكان العمل الحالي', fSecurity:'التدقيق الأمني',
+        fProposedTitle:'المسمى الوظيفي المقترح *', fEntity:'الجهة',
+        fSector2:'القطاع / الإدارة', fDirectManager:'المدير المباشر',
+        fContract:'نوع العقد', fContractDuration:'مدة العقد (سنوات)'
+      }
+    };
+  }
+
+  n2(v){ return parseFloat(String(v==null?'0':v).replace(/[^0-9.\-]/g,'')) || 0; }
+  money(v, ar){ const s=Math.round(v||0).toLocaleString('en-US'); return ar?(s+' د.إ'):('AED '+s); }
+  todayISO(){ return new Date().toISOString().slice(0,10); }
+  curL(){ const t=this.T(); return this.state.lang==='ar'?t.ar:t.en; }
+
+  toggleLang = () => this.setState(s=>({lang:s.lang==='en'?'ar':'en'}));
+  goTab1 = () => this.setState({formTab:1});
+  goTab2 = () => this.setState({formTab:2});
+  goTab3 = () => this.setState({formTab:3});
+  toggleNewHire = () => this.setState(s=>({isNewHire:!s.isNewHire}));
+  setEntityLogo = (e) => this.setState({selectedEntityLogo: e.target.value});
+  toggleChildrenTicket  = () => this.setState(s=>({showChildrenTicket:!s.showChildrenTicket}));
+  toggleChildrenVisa    = () => this.setState(s=>({showChildrenVisa:!s.showChildrenVisa}));
+  toggleChildrenMedical = () => this.setState(s=>({showChildrenMedical:!s.showChildrenMedical}));
+
+  backToDash = () => { window.location.href = 'Hiring Management Dashboard.dc.html'; };
+  backToForm = () => this.setState({view:'form'});
+  printActive = () => {
+    this.persist();
+    try {
+      const d = this.state.draft;
+      localStorage.setItem('osf_active_id', d.id);
+      localStorage.setItem('osf_forms', JSON.stringify(
+        this.state.forms.some(f=>f.id===d.id)
+          ? this.state.forms.map(f=>f.id===d.id?d:f)
+          : [d,...this.state.forms]
+      ));
+      localStorage.setItem('osf_preview_lang', this.state.lang);
+      localStorage.setItem('osf_preview_photo', this.state.photoDataUrl||'');
+      localStorage.setItem('osf_preview_entity', this.state.selectedEntityLogo||'moca');
+    } catch(e) {}
+    window.location.href = 'Hiring%20Form%20Preview.dc.html';
+  };
+  doPrint = () => window.print();
+
+  setField(k){ return (e) => this.setState(s=>({draft:{...s.draft,[k]:e.target.value}})); }
+  setNumChildren = (e) => this.setState(s=>({draft:{...s.draft,numChildren:e.target.value}}));
+  setVisaType = (e) => this.setState(s=>({draft:{...s.draft,visaType:e.target.value}}));
+  onAttach(slot){ return (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const kb = Math.round(file.size/1024);
+    const size = kb >= 1024 ? (kb/1024).toFixed(1)+' MB' : kb+' KB';
+    this.setState(s => ({ draft:{...s.draft, attachFiles:{...(s.draft.attachFiles||{}), [slot]:{name:file.name, size}}} }));
+    e.target.value = '';
+  }; }
+  removeAttach(slot){
+    this.setState(s => { const af={...(s.draft.attachFiles||{})}; delete af[slot]; return { draft:{...s.draft, attachFiles:af} }; });
+  }
+  addSpouse(sec){ this.setState(s=>({draft:{...s.draft, ['sp_'+sec]:true}})); }
+  removeSpouse(sec){ this.setState(s=>{ const dr={...s.draft}; dr['sp_'+sec]=false; return {draft:dr}; }); }
+  addChild(sec){ this.setState(s=>{ const dr={...s.draft}; const arr=Array.isArray(dr['ch_'+sec])?dr['ch_'+sec].slice():[]; const nid=(arr.length?Math.max(...arr):0)+1; arr.push(nid); dr['ch_'+sec]=arr; return {draft:dr}; }); }
+  removeChild(sec,id){ this.setState(s=>{ const dr={...s.draft}; dr['ch_'+sec]=(dr['ch_'+sec]||[]).filter(x=>String(x)!==String(id)); return {draft:dr}; }); }
+  onPhotoUpload = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => this.setState({ photoDataUrl: ev.target.result });
+    reader.readAsDataURL(file);
+  };
+  setPrevMonthly = (e) => this.setState(s=>({draft:{...s.draft,prevMonthly:e.target.value}}));
+  setProposedMonthly = (e) => this.setState(s=>({draft:{...s.draft,proposedMonthly:e.target.value}}));
+  setPrevTicket = (e) => this.setState(s=>({draft:{...s.draft,prevTicketAnnual:e.target.value}}));
+  setPropTicket = (e) => this.setState(s=>({draft:{...s.draft,ticketAnnual:e.target.value}}));
+  setPrevAccom = (e) => this.setState(s=>({draft:{...s.draft,prevAccomAnnual:e.target.value}}));
+  setPropAccom = (e) => this.setState(s=>({draft:{...s.draft,accumAnnual:e.target.value}}));
+  setPrevMedical = (e) => this.setState(s=>({draft:{...s.draft,prevMedical:e.target.value}}));
+  setPropMedical = (e) => this.setState(s=>({draft:{...s.draft,medical:e.target.value}}));
+  setPropEOS = (e) => this.setState(s=>({draft:{...s.draft,eosManual:e.target.value}}));
+  setPropOS  = (e) => this.setState(s=>({draft:{...s.draft,osManual:e.target.value}}));
+  setPrevEOS = (e) => this.setState(s=>({draft:{...s.draft,prevEosManual:e.target.value}}));
+  setPrevOS  = (e) => this.setState(s=>({draft:{...s.draft,prevOsManual:e.target.value}}));
+  setOsRate  = (e) => this.setState({osRate: e.target.value});
+  sendForApproval = () => {
+    this.persist();
+    this.setState({ approvalSent: true });
+    setTimeout(() => { window.location.href = 'HR%20Approval%20View.dc.html'; }, 800);
+  };
+
+  persist(){
+    const d = {...this.state.draft, updated:this.todayISO()};
+    const forms = this.state.forms;
+    const exists = forms.some(f=>f.id===d.id);
+    const updated = exists ? forms.map(f=>f.id===d.id?d:f) : [d,...forms];
+    try { localStorage.setItem('osf_forms', JSON.stringify(updated)); } catch(e) {}
+    this.setState({forms:updated, draft:d});
+  }
+
+  saveDraft = () => {
+    this.setState(s=>({draft:{...s.draft,status:'Draft'}}), ()=>{
+      this.persist();
+      this.setState({savedNote: this.curL().savedMsg});
+      setTimeout(()=>this.setState({savedNote:''}), 3000);
+    });
+  };
+  completeForm = () => {
+    this.setState(s=>({draft:{...s.draft,status:'Completed'}}), ()=>{
+      this.persist();
+      this.setState({savedNote: this.curL().completedMsg});
+      setTimeout(()=>this.setState({savedNote:''}), 3000);
+    });
+  };
+
+  renderVals() {
+    const ar = this.state.lang==='ar';
+    const L = this.curL();
+    const dir = ar?'rtl':'ltr';
+    const startAlign = ar?'right':'left';
+    const endAlign = ar?'left':'right';
+    const view = this.state.view;
+    const ft = this.state.formTab;
+    const isNewHire = this.state.isNewHire;
+    const d = this.state.draft || this.blank(0);
+
+    const statusBg = s => s==='Completed'?'#E4EFE8':'#F6ECD6';
+    const statusFg = s => s==='Completed'?'#2F6B4F':'#9A6B16';
+    const statusLbl = s => L.statuses[s]||s;
+
+    // Tab styles
+    const ts = n => { const a=ft===n; return {border:a?'#9E7B2F':'transparent',color:a?'#9E7B2F':'#6B6657',numBg:a?'#9E7B2F':'#E6E1D4',numFg:a?'#fff':'#4A463C'}; };
+    const t1=ts(1),t2=ts(2),t3=ts(3);
+
+    // Field builder
+    const fld = (key,label,opts={}) => ({
+      key, label, value:d[key]==null?'':d[key], handler:this.setField(key),
+      isSelect:!!opts.select, isInput:!opts.select,
+      inputType:opts.type||'text', span:opts.span||1, ph:opts.ph||'', options:opts.options||[]
+    });
+
+    const natMap = [
+      {en:'UAE',ar:'الإمارات العربية المتحدة'},
+      {en:'India',ar:'الهند'},
+      {en:'Philippines',ar:'الفلبين'},
+      {en:'Pakistan',ar:'باكستان'},
+      {en:'Egypt',ar:'مصر'},
+      {en:'Bangladesh',ar:'بنغلاديش'},
+      {en:'Nepal',ar:'نيبال'},
+      {en:'Jordan',ar:'الأردن'},
+      {en:'Saudi Arabia',ar:'المملكة العربية السعودية'},
+      {en:'Lebanon',ar:'لبنان'},
+      {en:'Sri Lanka',ar:'سريلانكا'},
+      {en:'Ethiopia',ar:'إثيوبيا'},
+      {en:'Indonesia',ar:'إندونيسيا'},
+      {en:'Kenya',ar:'كينيا'},
+      {en:'Sudan',ar:'السودان'},
+      {en:'Syria',ar:'سوريا'},
+      {en:'Yemen',ar:'اليمن'},
+      {en:'Morocco',ar:'المغرب'},
+      {en:'Tunisia',ar:'تونس'},
+      {en:'Iraq',ar:'العراق'},
+      {en:'Nigeria',ar:'نيجيريا'},
+      {en:'Ghana',ar:'غانا'},
+      {en:'China',ar:'الصين'},
+      {en:'United Kingdom',ar:'المملكة المتحدة'},
+      {en:'USA',ar:'الولايات المتحدة الأمريكية'},
+    ];
+    const allNats = natMap;
+    const maritalOpts = [{value:'',label:ar?'اختر...':'Select...'},{value:'single',label:ar?'أعزب/عزباء':'Single'},{value:'married',label:ar?'متزوج/ة':'Married'},{value:'divorced',label:ar?'مطلق/ة':'Divorced'},{value:'widowed',label:ar?'أرمل/ة':'Widowed'}];
+    const academicOpts = [{value:'',label:ar?'اختر...':'Select...'},{value:'highschool',label:ar?'ثانوية عامة':'High School'},{value:'diploma',label:ar?'دبلوم':'Diploma'},{value:'bachelor',label:ar?'بكالوريوس':'Bachelor\'s'},{value:'master',label:ar?'ماجستير':'Master\'s'},{value:'phd',label:ar?'دكتوراه':'PhD'},{value:'other',label:ar?'أخرى':'Other'}];
+    const yearsOpts = [{value:'',label:ar?'اختر...':'Select...'},{value:'lt1',label:ar?'أقل من سنة':'Less than 1 year'},{value:'1-2',label:ar?'1-2 سنة':'1–2 years'},{value:'3-5',label:ar?'3-5 سنوات':'3–5 years'},{value:'6-10',label:ar?'6-10 سنوات':'6–10 years'},{value:'10+',label:ar?'أكثر من 10 سنوات':'10+ years'}];
+    const sectorOpts = [{value:'',label:ar?'اختر...':'Select...'},{value:'gov-services',label:ar?'خدمات حكومية':'Government Services'},{value:'operations',label:ar?'العمليات':'Operations'},{value:'finance',label:ar?'المالية':'Finance'},{value:'it',label:ar?'تقنية المعلومات':'IT'},{value:'hr',label:ar?'الموارد البشرية':'Human Resources'},{value:'legal',label:ar?'الشؤون القانونية':'Legal Affairs'},{value:'other',label:ar?'أخرى':'Other'}];
+    const assessmentOpts = [{value:'',label:ar?'اختر...':'Select...'},{value:'acceptable',label:ar?'مقبول':'Acceptable'},{value:'very-good',label:ar?'جيد جداً':'Very Good'},{value:'excellent',label:ar?'ممتاز':'Excellent'}];
+    const securityOpts = [{value:'',label:ar?'اختر...':'Select...'},{value:'approved',label:ar?'تمت الموافقة':'Approved'},{value:'not-approved',label:ar?'لم يتم الموافقة':'Not Approved'}];
+    const entityOpts = [{value:'',label:ar?'اختر...':'Select...'},{value:'moca',label:ar?'وزارة شؤون مجلس الوزراء':'Ministry of Cabinet Affairs'},{value:'mof',label:ar?'وزارة المالية':'Ministry of Finance'},{value:'gov-entity',label:ar?'جهة حكومية أخرى':'Other Gov. Entity'},{value:'private',label:ar?'شركة خاصة':'Private Company'},{value:'other',label:ar?'أخرى':'Other'}];
+    const contractOpts = [{value:'Outsourced',label:ar?'عقد تعهيد':'Outsourced'},{value:'Service Contract',label:ar?'عقد خدمات':'Service Contract'}];
+    const durationOpts = [{value:'1',label:ar?'سنة واحدة':'1 Year'},{value:'2',label:ar?'سنتان':'2 Years'},{value:'3',label:ar?'3 سنوات':'3 Years'},{value:'4',label:ar?'4 سنوات':'4 Years'},{value:'5',label:ar?'5 سنوات':'5 Years'}];
+
+    // Lookup helper: convert stored key → current-language label
+    const lkp = (opts, val) => { const o = opts.find(x=>x.value===val); return o ? o.label : (val||'—'); };
+    const lkpNat = (val) => { const n = allNats.find(x=>x.en===val); return n ? (ar?n.ar:n.en) : (val||'—'); };
+
+    const childrenField = d.maritalStatus === 'married' ? [{
+      key:'numChildren', label:L.numChildren, value:d.numChildren||'', handler:this.setNumChildren,
+      isSelect:false, isInput:true, inputType:'number', span:1, ph:'0', options:[]
+    }] : [];
+
+    const tab1Sections = [{num:'1',title:L.s1,fields:[
+      fld('name',L.fFullName), fld('maritalStatus',L.fMarital,{select:true,options:maritalOpts}),
+      ...childrenField,
+      fld('nationality',L.fNat,{select:true,options:[{value:'',label:ar?'اختر...':'Select...'},...allNats.map(n=>({value:n.en,label:ar?n.ar:n.en}))]}),
+      fld('academicQual',L.fAcademic,{select:true,options:academicOpts}),
+      fld('yearsExp',L.fYearsExp,{select:true,options:yearsOpts}),
+      fld('sectorDept',L.fSector,{select:true,options:sectorOpts}),
+      fld('assessmentResult',L.fAssessment,{select:true,options:assessmentOpts}),
+      fld('currentWorkplace',L.fWorkplace),
+      fld('securityClearance',L.fSecurity,{select:true,options:securityOpts})
+    ]}];
+
+    const tab2Sections = [{num:'2',title:L.s2,fields:[
+      fld('position',L.fProposedTitle), fld('entity',L.fEntity,{select:true,options:entityOpts}),
+      fld('sectorDept',L.fSector2,{select:true,options:sectorOpts}),
+      fld('directManager',L.fDirectManager), fld('contractType',L.fContract,{select:true,options:contractOpts}),
+      fld('contractDuration',L.fContractDuration,{select:true,options:durationOpts})
+    ]}];
+
+    // Family breakdown — dynamic add/remove per section
+    const isMarriedState = d.maritalStatus === 'married';
+    const showFamilyBreakdown = isMarriedState;
+    const memberLabel = (type, idx) => type==='employee' ? (ar?'الموظف':'Employee')
+      : type==='spouse' ? (ar?'الزوج/الزوجة':'Spouse')
+      : (ar?('طفل '+idx):('Child '+idx));
+    const buildSection = (sec, baseProp, basePrev) => {
+      const spouse = d['sp_'+sec] === true;
+      const children = Array.isArray(d['ch_'+sec]) ? d['ch_'+sec] : [];
+      const mkr = (type, key, idx) => ({
+        label: memberLabel(type, idx), type,
+        amtVal: d['fm_'+sec+'_'+key] || '', setAmt: this.setField('fm_'+sec+'_'+key),
+        prevVal: d['fmp_'+sec+'_'+key] || '', setPrev: this.setField('fmp_'+sec+'_'+key),
+        removable: true,
+        onRemove: type==='spouse' ? (()=>this.removeSpouse(sec))
+                : (()=>this.removeChild(sec, key.replace('child','')))
+      });
+      const rows = [];
+      if (spouse) rows.push(mkr('spouse','spouse'));
+      children.forEach((cid,i)=> rows.push(mkr('child','child'+cid, i+1)));
+      return {
+        rows,
+        canAddSpouse: isMarriedState && !spouse,
+        canAddChild: isMarriedState,
+        addSpouse: ()=>this.addSpouse(sec), addChild: ()=>this.addChild(sec),
+        total: this.n2(baseProp) + rows.reduce((s,r)=>s+this.n2(r.amtVal),0),
+        prevTotal: this.n2(basePrev) + rows.reduce((s,r)=>s+this.n2(r.prevVal),0)
+      };
+    };
+    const ticketSec = buildSection('ticket', d.ticketAnnual, d.prevTicketAnnual);
+    const visaSec = buildSection('visa', d.accumAnnual, d.prevAccomAnnual);
+    const medicalSec = buildSection('medical', d.medical, d.prevMedical);
+    const familyTicketTotal = ticketSec.total, familyPrevTicketTotal = ticketSec.prevTotal;
+    const familyVisaTotal = visaSec.total, familyPrevVisaTotal = visaSec.prevTotal;
+    const familyMedicalTotal = medicalSec.total, familyPrevMedicalTotal = medicalSec.prevTotal;
+
+    // Comparison calculations
+    const pS=this.n2(d.prevMonthly), propS=this.n2(d.proposedMonthly);
+    const pT=familyPrevTicketTotal, propT=familyTicketTotal;
+    const pA=familyPrevVisaTotal, propA=familyVisaTotal;
+    const pM=familyPrevMedicalTotal, propM=familyMedicalTotal;
+    const prevBase=pS+pT/12+pA/12, propBase=propS+propT/12+propA/12;
+    const prevEOS=this.n2(d.prevEosManual), propEOS=this.n2(d.eosManual);
+    const prevOS=this.n2(d.prevOsManual),  propOS=this.n2(d.osManual);
+    const prevCont=prevBase+pM+prevEOS+prevOS, propCont=propBase+propM+propEOS+propOS;
+    const prevAnn=prevCont*12, propAnn=propCont*12;
+
+    const showCurrent = !isNewHire;
+    const colCount = showCurrent ? 4 : 3;
+    const dStr=(prop,prev)=>{ if(!showCurrent)return'—'; const d=prop-prev; if(Math.abs(d)<0.01)return L.noChange; return(d>0?'+':'')+this.money(d,ar); };
+    const dCol=(prop,prev)=>{ const d=prop-prev; if(Math.abs(d)<0.01)return'#8C877A'; return d>0?'#2F6B4F':'#B22234'; };
+    const cmp = {
+      prevMonthly:d.prevMonthly||'', propMonthly:d.proposedMonthly||'',
+      prevTicket:d.prevTicketAnnual||'', propTicket:d.ticketAnnual||'',
+      prevAccom:d.prevAccomAnnual||'', propAccom:d.accumAnnual||'',
+      prevMedical:d.prevMedical||'', propMedical:d.medical||'',
+      prevTicketDisplay: this.money(pT,ar), propTicketDisplay: this.money(propT,ar),
+      prevMedicalDisplay: this.money(pM,ar), propMedicalDisplay: this.money(propM,ar),
+      propAccomDisplay: this.money(propA,ar), prevVisaDisplay: this.money(pA,ar),
+      propEOS: d.eosManual||'', propOS: d.osManual||'',
+      prevEOS: d.prevEosManual||'', prevOS: d.prevOsManual||'',
+      setPropEOS: this.setPropEOS, setPropOS: this.setPropOS,
+      setPrevEOS: this.setPrevEOS, setPrevOS: this.setPrevOS,
+      osRate: this.state.osRate, setOsRate: this.setOsRate,
+      sendForApproval: this.sendForApproval, approvalSent: this.state.approvalSent,
+      salDiff:dStr(propS,pS), salDiffCol:dCol(propS,pS),
+      tktDiff:dStr(propT,pT), tktDiffCol:dCol(propT,pT),
+      accDiff:dStr(propA,pA), accDiffCol:dCol(propA,pA),
+      prevBaseDisplay:this.money(prevBase,ar), propBaseDisplay:this.money(propBase,ar),
+      baseDiff:dStr(propBase,prevBase), baseDiffCol:dCol(propBase,prevBase),
+      prevEOSDisplay:this.money(prevEOS,ar), propEOSDisplay:this.money(propEOS,ar),
+      eosDiff:dStr(propEOS,prevEOS), eosDiffCol:dCol(propEOS,prevEOS),
+      prevOSDisplay:this.money(prevOS,ar), propOSDisplay:this.money(propOS,ar),
+      osDiff:dStr(propOS,prevOS), osDiffCol:dCol(propOS,prevOS),
+      prevContDisplay:this.money(prevCont,ar), propContDisplay:this.money(propCont,ar),
+      contDiff:dStr(propCont,prevCont), contDiffCol:dCol(propCont,prevCont),
+      prevAnnDisplay:this.money(prevAnn,ar), propAnnDisplay:this.money(propAnn,ar),
+      annDiff:dStr(propAnn,prevAnn)
+    };
+
+    // Attachments — fixed slots with attach/remove/replace
+    const attachSlots = [
+      {key:'cv',        label: ar?'السيرة الذاتية':'CV / Resume'},
+      {key:'quotation', label: ar?'عرض الأسعار':'Quotation'},
+      {key:'passport',  label: ar?'جواز السفر':'Passport'},
+      {key:'signed',    label: ar?'هوية الموظف':'Employee ID'}
+    ];
+    const af = d.attachFiles || {};
+    const attachRows = attachSlots.map(s => {
+      const f = af[s.key];
+      const ext = f ? (f.name.split('.').pop()||'').toUpperCase().slice(0,4) : '';
+      return {
+        key:s.key, label:s.label,
+        hasFile: !!f, noFile: !f,
+        statusLine: f ? (f.name + ' · ' + f.size) : L.attachPending,
+        icon: f ? ext : '＋',
+        iconBg: f ? '#F2F0E9' : '#FBF6EA',
+        iconColor: f ? '#7C1733' : '#C7A24A',
+        onAttach: this.onAttach(s.key),
+        onRemove: () => this.removeAttach(s.key)
+      };
+    });
+    const audit = [
+      {action:ar?'إنشاء النموذج':'Form created',by:d.createdBy||'',time:(d.created||'')+' 09:14',dot:'#9E7B2F'},
+      {action:ar?'تحديث البيانات':'Data updated',by:d.manager||'',time:(d.created||'')+' 11:02',dot:'#7C1733'},
+      ...(d.status==='Completed'?[{action:ar?'تحديد النموذج كمكتمل':'Marked Completed',by:d.manager||'',time:(d.updated||'')+' 15:38',dot:'#2F6B4F'}]:[{action:ar?'حُفظ كمسودة':'Saved as Draft',by:d.createdBy||'',time:(d.updated||'')+' 16:20',dot:'#9A6B16'}])
+    ];
+
+    // Print data
+    const dash='—';
+    const printSections = [
+      {title:L.s1,rows:[
+        {k:L.fFullName,v:d.name||dash},
+        {k:L.fYearsExp,v:lkp(yearsOpts,d.yearsExp)},
+        {k:L.fMarital,v:lkp(maritalOpts,d.maritalStatus)},
+        {k:L.fNat,v:lkpNat(d.nationality)},
+        {k:L.fAcademic,v:lkp(academicOpts,d.academicQual)},
+        {k:L.fSector,v:lkp(sectorOpts,d.sectorDept)},
+        {k:L.fAssessment,v:lkp(assessmentOpts,d.assessmentResult)},
+        {k:L.fWorkplace,v:d.currentWorkplace||dash},
+        {k:L.fSecurity,v:lkp(securityOpts,d.securityClearance)}
+      ]},
+      {title:L.s2,rows:[
+        {k:L.fProposedTitle,v:d.position||dash},
+        {k:L.fEntity,v:lkp(entityOpts,d.entity)},
+        {k:L.fSector2,v:lkp(sectorOpts,d.sectorDept)},
+        {k:L.fDirectManager,v:d.directManager||dash},
+        {k:L.fContract,v:lkp(contractOpts,d.contractType)},
+        {k:L.fContractDuration,v:lkp(durationOpts,d.contractDuration)}
+      ]},
+      {title:L.tab3,rows:[
+        {k:L.rowMonthlySalary,v:this.money(propS,ar)},
+        {k:L.rowAirTicket,v:this.money(propT,ar)},
+        {k:ar?'فيزا + بطاقة عمل':'Visa + Labour Card',v:this.money(propA,ar)},
+        {k:L.rowMedical,v:this.money(propM,ar)},
+        {k:L.rowEOS,v:this.money(propEOS,ar)},
+        {k:(this.state.osRate==='18'?(ar?'نسبة شركة التعهيد 18%':'Outsourcing Co. Share 18%'):(ar?'نسبة شركة التعهيد 9%':'Outsourcing Co. Share 9%')),v:this.money(propOS,ar)},
+        {k:L.rowContractMonthly,v:this.money(propCont,ar)}
+      ]}
+    ];
+    const signatures = [
+      {role:ar?'مدير الموارد البشرية':'HR Director',name:''},
+      {role:ar?'إدارة المشتريات':'Procurement Department',name:''},
+      {role:ar?'رئيس القطاع':'Sector Head',name:''}
+    ];
+
+    const formHeading = d._new ? (ar?'نموذج توظيف جديد':'New Hiring Form') : (d.name || (ar?'نموذج توظيف جديد':'New Hiring Form'));
+    const formMeta = (d.id||'') + ' · ' + (d.createdBy||'') + ' · ' + (d.created||'');
+
+    return {
+      dir, startAlign, endAlign,
+      fontStack: ar?"'IBM Plex Sans Arabic',system-ui,sans-serif":"'IBM Plex Sans',system-ui,sans-serif",
+      L, langBtn: ar?'English':'العربية',
+      isFormView: view==='form', isPrint: view==='print',
+      isExisting: !d._new,
+      isTab1:ft===1, isTab2:ft===2, isTab3:ft===3,
+      t1Border:t1.border, t1Color:t1.color, t1NumBg:t1.numBg, t1NumFg:t1.numFg,
+      t2Border:t2.border, t2Color:t2.color, t2NumBg:t2.numBg, t2NumFg:t2.numFg,
+      t3Border:t3.border, t3Color:t3.color, t3NumBg:t3.numBg, t3NumFg:t3.numFg,
+      goTab1:this.goTab1, goTab2:this.goTab2, goTab3:this.goTab3,
+      formHeading, formMeta,
+      statusBg:statusBg(d.status||'Draft'), statusFg:statusFg(d.status||'Draft'), statusLabel:statusLbl(d.status||'Draft'),
+      savedNote:this.state.savedNote,
+      tab1Sections, tab2Sections, showCurrent, colCount, cmp,
+      toggleNewHire:this.toggleNewHire, toggleBg:isNewHire?'#9E7B2F':'#D9D3C2', toggleKnob:isNewHire?'21px':'3px',
+      setPrevMonthly:this.setPrevMonthly, setProposedMonthly:this.setProposedMonthly,
+      setPrevTicket:this.setPrevTicket, setPropTicket:this.setPropTicket,
+      setPrevAccom:this.setPrevAccom, setPropAccom:this.setPropAccom,
+      setPrevMedical:this.setPrevMedical, setPropMedical:this.setPropMedical,
+      setPropEOS:this.setPropEOS, setPropOS:this.setPropOS,
+      setPrevEOS:this.setPrevEOS, setPrevOS:this.setPrevOS,
+      attachRows, audit,
+      printId:d.id||'', today:this.todayISO(),
+      printContractType:d.contractType||'', printStatus:statusLbl(d.status||'Draft'),
+      printAnnualTotal:this.money(propAnn,ar),
+      printSections, signatures,
+      entityLogoSrc: ({moca:'assets/moca-logo.jpg', pmo:'assets/pmo-logo.png', fcsc:'assets/fcsc-logo.jpg'})[this.state.selectedEntityLogo] || 'assets/moca-logo.jpg',
+      entityLogoCss: `url('${({moca:'assets/moca-logo.jpg', pmo:'assets/pmo-logo.png', fcsc:'assets/fcsc-logo.jpg'})[this.state.selectedEntityLogo] || 'assets/moca-logo.jpg'}')`,
+      entityLogoOpts: [{value:'moca',label:ar?'وزارة شؤون مجلس الوزراء':'Ministry of Cabinet Affairs'},{value:'pmo',label:ar?'مكتب رئاسة مجلس الوزراء':'Prime Minister\'s Office'},{value:'fcsc',label:ar?'المركز الاتحادي للتنافسية':'Federal Competitiveness Centre'}],
+      selectedEntityLogo: this.state.selectedEntityLogo, setEntityLogo: this.setEntityLogo,
+      visaType: d.visaType || 'visa-labour', setVisaType: this.setVisaType,
+      photoDataUrl: this.state.photoDataUrl,
+      photoBgCss: this.state.photoDataUrl ? `url('${this.state.photoDataUrl}')` : 'none',
+      noPhoto: !this.state.photoDataUrl,
+      onPhotoUpload: this.onPhotoUpload,
+      isMarried: d.maritalStatus === 'married',
+      showFamilyBreakdown, notFamilyBreakdown: !showFamilyBreakdown,
+      ticketRows: ticketSec.rows, ticketCanAddSpouse: ticketSec.canAddSpouse, ticketCanAddChild: ticketSec.canAddChild, ticketAddSpouse: ticketSec.addSpouse, ticketAddChild: ticketSec.addChild,
+      visaRows: visaSec.rows, visaCanAddSpouse: visaSec.canAddSpouse, visaCanAddChild: visaSec.canAddChild, visaAddSpouse: visaSec.addSpouse, visaAddChild: visaSec.addChild,
+      medicalRows: medicalSec.rows, medicalCanAddSpouse: medicalSec.canAddSpouse, medicalCanAddChild: medicalSec.canAddChild, medicalAddSpouse: medicalSec.addSpouse, medicalAddChild: medicalSec.addChild,
+      familyTicketDisplay: this.money(familyTicketTotal, ar),
+      familyVisaDisplay: this.money(familyVisaTotal, ar),
+      familyMedicalDisplay: this.money(familyMedicalTotal, ar),
+      draftNumChildren: d.numChildren || '',
+      setNumChildren: this.setNumChildren,
+      backToDash:this.backToDash, backToForm:this.backToForm,
+      saveDraft:this.saveDraft, completeForm:this.completeForm,
+      printActive:this.printActive, doPrint:this.doPrint, toggleLang:this.toggleLang
+    };
+  }
+}
+</script>
+</body>
+</html>
