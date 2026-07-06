@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E9E6DD; }
+  ::-webkit-scrollbar { height: 8px; width: 8px; }
+  ::-webkit-scrollbar-thumb { background: #cfc9b8; border-radius: 6px; }
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff !important; }
+    .doc-card { box-shadow: none !important; margin: 0 !important; max-width: none !important; }
+    @page { size: A4; margin: 0.6in; }
+  }
+</style>
+</helmet>
+
+<div dir="{{ dir }}" style="min-height:100vh;font-family:{{ fontStack }};-webkit-font-smoothing:antialiased;color:#23211C;">
+
+  <!-- Sticky nav bar -->
+  <div class="no-print" style="position:sticky;top:0;z-index:100;background:#F2F0E9;border-bottom:1px solid #E6E1D4;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+    <button onClick="{{ backToForm }}" style="font-family:inherit;font-size:13px;font-weight:600;color:#6B6657;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;">{{ L.backToForm }}</button>
+    <div style="font-size:12px;color:#9E7B2F;font-weight:600;">{{ L.finalStepNote }}</div>
+    <div style="display:flex;gap:9px;">
+      <button onClick="{{ doPrint }}" style-hover="background:#FBF6EA;" style="font-family:inherit;font-size:13px;font-weight:600;color:#9E7B2F;background:#fff;border:1.5px solid #C7A24A;border-radius:9px;padding:9px 16px;cursor:pointer;display:flex;align-items:center;gap:7px;">{{ L.printBtn }}</button>
+      <button onClick="{{ sendForApproval }}" style-hover="background:#8C6B26;" style="font-family:inherit;font-size:13.5px;font-weight:700;color:#fff;background:#9E7B2F;border:none;border-radius:9px;padding:9px 20px;cursor:pointer;box-shadow:0 2px 8px rgba(158,123,47,.25);display:flex;align-items:center;gap:7px;">{{ L.sendBtn }}</button>
+    </div>
+  </div>
+
+  <!-- Document card -->
+  <div style="padding:28px 20px 60px;">
+  <div class="doc-card" style="max-width:820px;margin:0 auto;background:#fff;box-shadow:0 4px 28px rgba(0,0,0,.12);border-radius:4px;padding:48px 52px;">
+
+    <!-- Masthead -->
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:2px solid #9E7B2F;padding-bottom:18px;margin-bottom:22px;">
+      <!-- Photo -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:none;">
+        <div style="width:80px;height:100px;border-radius:4px;border:1px solid #E6E1D4;background:#F2F0E9;display:flex;align-items:center;justify-content:center;font-size:32px;background-image:{{ photoBg }};background-size:cover;background-position:center;">
+          <sc-if value="{{ noPhoto }}" hint-placeholder-val="{{ true }}"><span>👤</span></sc-if>
+        </div>
+        <div style="font-size:9px;color:#8C877A;">{{ L.photoLabel }}</div>
+      </div>
+      <!-- Logo -->
+      <div style="flex:1;display:flex;justify-content:center;">
+        <div style="height:60px;width:260px;background-image:{{ entityLogoCss }};background-size:contain;background-repeat:no-repeat;background-position:center;"></div>
+      </div>
+      <!-- Form ref -->
+      <div style="text-align:{{ endAlign }};flex:none;">
+        <div style="font-size:11px;font-weight:700;color:#7C1733;">{{ formId }}</div>
+        <div style="font-size:10.5px;color:#8C877A;margin-top:2px;">{{ L.printedOn }} {{ today }}</div>
+        <div style="font-size:10.5px;color:#8C877A;margin-top:2px;">{{ statusLabel }}</div>
+      </div>
+    </div>
+
+    <!-- Title -->
+    <h2 style="font-size:17px;font-weight:700;text-align:center;margin:0 0 4px;letter-spacing:-0.01em;">{{ L.printTitle }}</h2>
+    <div style="text-align:center;font-size:12px;color:#8C877A;margin-bottom:26px;">{{ contractType }} · {{ statusLabel }}</div>
+
+    <!-- Section 1: Candidate Personal Data -->
+    <div style="margin-bottom:22px;">
+      <div style="font-size:10.5px;font-weight:700;color:#9E7B2F;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid #E6E1D4;padding-bottom:5px;margin-bottom:12px;">{{ L.s1 }}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 32px;">
+        <sc-for list="{{ personalRows }}" as="r" hint-placeholder-count="6">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:1px dotted #EDE9DD;padding-bottom:5px;font-size:12.5px;">
+            <span style="color:#6B6657;white-space:nowrap;">{{ r.k }}</span>
+            <span style="font-weight:600;text-align:{{ endAlign }};color:#23211C;">{{ r.v }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- Section 2: Employment Data -->
+    <div style="margin-bottom:22px;">
+      <div style="font-size:10.5px;font-weight:700;color:#9E7B2F;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid #E6E1D4;padding-bottom:5px;margin-bottom:12px;">{{ L.s2 }}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 32px;">
+        <sc-for list="{{ employmentRows }}" as="r" hint-placeholder-count="4">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:1px dotted #EDE9DD;padding-bottom:5px;font-size:12.5px;">
+            <span style="color:#6B6657;white-space:nowrap;">{{ r.k }}</span>
+            <span style="font-weight:600;text-align:{{ endAlign }};color:#23211C;">{{ r.v }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- Section 3: Fees & Costs -->
+    <div style="margin-bottom:16px;">
+      <div style="font-size:10.5px;font-weight:700;color:#9E7B2F;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid #E6E1D4;padding-bottom:5px;margin-bottom:12px;">{{ L.s3 }}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 32px;">
+        <sc-for list="{{ costRows }}" as="r" hint-placeholder-count="6">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:1px dotted #EDE9DD;padding-bottom:5px;font-size:12.5px;">
+            <span style="color:#6B6657;white-space:nowrap;">{{ r.k }}</span>
+            <span style="font-weight:600;text-align:{{ endAlign }};color:#23211C;font-variant-numeric:tabular-nums;">{{ r.v }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- Annual total -->
+    <div style="background:#7C1733;border-radius:6px;padding:13px 18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;">
+      <span style="font-size:13px;font-weight:700;color:#fff;">{{ L.annualTotal }}</span>
+      <span style="font-size:19px;font-weight:700;color:#FFE6B0;font-variant-numeric:tabular-nums;">{{ annualTotal }}</span>
+    </div>
+
+    <!-- Signatures -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;margin-top:44px;">
+      <sc-for list="{{ signatures }}" as="sig" hint-placeholder-count="3">
+        <div>
+          <div style="border-top:1px solid #23211C;padding-top:8px;font-size:11.5px;font-weight:700;">{{ sig.role }}</div>
+          <div style="font-size:11.5px;color:#8C877A;margin-top:2px;">{{ sig.name }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- Footer -->
+    <div style="margin-top:40px;padding-top:12px;border-top:1px solid #E6E1D4;font-size:9.5px;color:#A8A293;text-align:center;">{{ L.footer }}</div>
+
+  </div>
+  </div>
+</div>
+
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="#E9E6DD"/>
+  <rect x="70" y="40" width="260" height="320" rx="4" fill="#fff" stroke="#E6E1D4" stroke-width="1"/>
+  <rect x="70" y="40" width="260" height="28" rx="0" fill="#F2F0E9" stroke="#E6E1D4" stroke-width="1"/>
+  <rect x="80" y="50" width="60" height="8" rx="4" fill="#6B6657" opacity=".5"/>
+  <rect x="260" y="48" width="60" height="12" rx="6" fill="#7C1733"/>
+  <rect x="86" y="90" width="228" height="1" fill="#9E7B2F"/>
+  <rect x="86" y="102" width="228" height="6" rx="3" fill="#23211C" opacity=".6"/>
+  <rect x="130" y="116" width="140" height="5" rx="2" fill="#8C877A" opacity=".5"/>
+  <rect x="86" y="136" width="228" height="1" fill="#E6E1D4"/>
+  <rect x="86" y="146" width="100" height="5" rx="2" fill="#E6E1D4"/>
+  <rect x="200" y="146" width="114" height="5" rx="2" fill="#E6E1D4"/>
+  <rect x="86" y="160" width="80" height="5" rx="2" fill="#E6E1D4"/>
+  <rect x="200" y="160" width="90" height="5" rx="2" fill="#E6E1D4"/>
+  <rect x="86" y="220" width="228" height="30" rx="4" fill="#7C1733"/>
+  <rect x="96" y="230" width="80" height="10" rx="3" fill="#fff" opacity=".7"/>
+  <rect x="240" y="228" width="64" height="14" rx="3" fill="#FFE6B0"/>
+  <rect x="86" y="300" width="70" height="1" fill="#23211C"/>
+  <rect x="165" y="300" width="70" height="1" fill="#23211C"/>
+  <rect x="244" y="300" width="70" height="1" fill="#23211C"/>
+</svg>
+</template>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { lang: 'en', ready: false, d: {}, photo: '', entityKey: 'moca' };
+
+  componentDidMount() {
+    try {
+      const forms = JSON.parse(localStorage.getItem('osf_forms')||'[]');
+      const activeId = localStorage.getItem('osf_active_id');
+      const d = forms.find(f=>f.id===activeId) || forms[0] || null;
+      if (!d) { window.location.href = 'Hiring%20Management%20Dashboard.dc.html'; return; }
+      const lang = localStorage.getItem('osf_preview_lang') || 'en';
+      const photo = localStorage.getItem('osf_preview_photo') || '';
+      const entityKey = localStorage.getItem('osf_preview_entity') || 'moca';
+      this.setState({ ready: true, d, lang, photo, entityKey });
+    } catch(e) {
+      window.location.href = 'Hiring%20Management%20Dashboard.dc.html';
+    }
+  }
+
+  T() {
+    return {
+      en: {
+        backToForm:'← Back to Form', finalStepNote:'Final Step — Review before sending for approval',
+        printBtn:'⎙ Print / Save PDF', sendBtn:'Send for HR Approval',
+        printTitle:'Outsourced / Service Contract Hiring Form',
+        printedOn:'Printed on', photoLabel:'Employee Photo', sigDate:'Date:',
+        footer:'United Arab Emirates · Ministry of Cabinet Affairs — Confidential HR document.',
+        s1:'Candidate Personal Data', s2:'Employment Data', s3:'Fees & Costs',
+        annualTotal:'Annual Contract Cost',
+        f:{ name:'Employee Full Name', marital:'Marital Status', nat:'Nationality',
+            academic:'Academic Qualification', years:'Years of Experience',
+            sector:'Sector / Department', assessment:'Assessment Test Result',
+            workplace:'Current Work Location', security:'Security Clearance',
+            position:'Proposed Job Title', entity:'Organization / Entity',
+            sector2:'Sector / Department', directMgr:'Direct Manager',
+            contract:'Contract Type', duration:'Contract Duration',
+            monthly:'Monthly Salary', ticket:'Air Ticket Allowance (annual)',
+            visa:'Visa + Labour Card', medical:'Health Insurance (monthly)',
+            eos:'End of Service', os:'Outsourcing Co. Share', total:'Total Monthly Contract Cost' }
+      },
+      ar: {
+        backToForm:'← العودة إلى النموذج', finalStepNote:'الخطوة الأخيرة — راجع الوثيقة قبل الإرسال للاعتماد',
+        printBtn:'⎙ طباعة / حفظ PDF', sendBtn:'إرسال للاعتماد',
+        printTitle:'نموذج توظيف عقد خارجي / عقد خدمة',
+        printedOn:'طُبع في', photoLabel:'صورة الموظف', sigDate:'التاريخ:',
+        footer:'الإمارات العربية المتحدة · وزارة شؤون مجلس الوزراء — وثيقة موارد بشرية سرية.',
+        s1:'بيانات المرشح الشخصية', s2:'البيانات الوظيفية', s3:'الرسوم والتكاليف',
+        annualTotal:'التكلفة السنوية للعقد',
+        f:{ name:'الاسم الكامل', marital:'الحالة الاجتماعية', nat:'الجنسية',
+            academic:'المؤهل الأكاديمي', years:'سنوات الخبرة',
+            sector:'القطاع / الإدارة', assessment:'نتائج اختبار التقييم',
+            workplace:'مكان العمل الحالي', security:'التدقيق الأمني',
+            position:'المسمى الوظيفي المقترح', entity:'الجهة',
+            sector2:'القطاع / الإدارة', directMgr:'المدير المباشر',
+            contract:'نوع العقد', duration:'مدة العقد',
+            monthly:'الراتب الشهري', ticket:'بدل تذاكر السفر (سنوي)',
+            visa:'فيزا + بطاقة عمل', medical:'التأمين الصحي (شهري)',
+            eos:'نهاية الخدمة', os:'نسبة شركة التعهيد', total:'مجموع تكاليف العقد الشهرية' }
+      }
+    };
+  }
+
+  n2(v){ return parseFloat(String(v==null?'0':v).replace(/[^0-9.\-]/g,''))||0; }
+  money(v,ar){ const s=Math.round(v||0).toLocaleString('en-US'); return ar?(s+' د.إ'):('AED '+s); }
+  todayISO(){ return new Date().toISOString().slice(0,10); }
+  curL(){ const t=this.T(); return this.state.lang==='ar'?t.ar:t.en; }
+  toggleLang = () => this.setState(s=>({lang:s.lang==='en'?'ar':'en'}));
+
+  loadData() {
+    return { draft: this.state.d, lang: this.state.lang, photo: this.state.photo, entityKey: this.state.entityKey };
+  }
+
+  backToForm = () => { window.location.href = 'Create%20Hiring%20Form.dc.html'; };
+  doPrint = () => window.print();
+  sendForApproval = () => {
+    window.location.href = 'HR%20Approval%20View.dc.html';
+  };
+
+  renderVals() {
+    const { draft: d, lang: storedLang, photo, entityKey } = this.loadData();
+    const ar = storedLang === 'ar';
+    const L = this.curL();
+    const F = L.f;
+    const dir = ar ? 'rtl' : 'ltr';
+    const fontStack = ar ? "'IBM Plex Sans Arabic',system-ui,sans-serif" : "'IBM Plex Sans',system-ui,sans-serif";
+    const endAlign = ar ? 'left' : 'right';
+    const dash = '—';
+    const m = (v) => this.money(this.n2(v), ar);
+
+    const logoMap = { moca:'assets/moca-logo.jpg', pmo:'assets/pmo-logo.png', fcsc:'assets/fcsc-logo.jpg' };
+    const entityLogoCss = `url('${logoMap[entityKey]||'assets/moca-logo.jpg'}')`;
+
+    const propS = this.n2(d.proposedMonthly);
+    const propTkt = this.n2(d.ticketAnnual);
+    const propVisa = this.n2(d.accumAnnual);
+    const propMed = this.n2(d.medical);
+    const propEOS = this.n2(d.eosManual);
+    const propOS = this.n2(d.osManual);
+    const propBase = propS + propTkt/12 + propVisa/12;
+    const propCont = propBase + propMed + propEOS + propOS;
+    const propAnn = propCont * 12;
+
+    const personalRows = [
+      {k:F.name, v:d.name||dash},
+      {k:F.years, v:d.yearsExp||dash},
+      {k:F.marital, v:d.maritalStatus||dash},
+      {k:F.nat, v:d.nationality||dash},
+      {k:F.academic, v:d.academicQual||dash},
+      {k:F.sector, v:d.sectorDept||dash},
+      {k:F.assessment, v:d.assessmentResult||dash},
+      {k:F.workplace, v:d.currentWorkplace||dash},
+      {k:F.security, v:d.securityClearance||dash}
+    ];
+    const employmentRows = [
+      {k:F.position, v:d.position||dash},
+      {k:F.entity, v:d.entity||dash},
+      {k:F.sector2, v:d.sectorDept||dash},
+      {k:F.directMgr, v:d.directManager||dash},
+      {k:F.contract, v:d.contractType||dash},
+      {k:F.duration, v:(d.contractDuration||dash)+' '+(ar?'سنوات':'yrs')}
+    ];
+    const costRows = [
+      {k:F.monthly, v:m(d.proposedMonthly)},
+      {k:F.ticket, v:m(d.ticketAnnual)},
+      {k:F.visa, v:m(d.accumAnnual)},
+      {k:F.medical, v:m(d.medical)},
+      {k:F.eos, v:m(d.eosManual)},
+      {k:F.os, v:m(d.osManual)},
+      {k:F.total, v:m(propCont)}
+    ];
+    const signatures = [
+      {role:ar?'مدير الموارد البشرية':'HR Director', name:''},
+      {role:ar?'إدارة المشتريات':'Procurement Department', name:''},
+      {role:ar?'رئيس القطاع':'Sector Head', name:''}
+    ];
+
+    const statusLabel = d.status==='Completed'?(ar?'مكتمل':'Completed'):(ar?'مسودة':'Draft');
+
+    return {
+      dir, fontStack, endAlign, L,
+      langBtn: ar?'English':'العربية', toggleLang: this.toggleLang,
+      entityLogoCss,
+      photoBg: photo ? `url('${photo}')` : 'none',
+      noPhoto: !photo,
+      formId: d.id||'OSF-2026-XXXX',
+      today: this.todayISO(),
+      statusLabel,
+      contractType: d.contractType||'Outsourced',
+      personalRows, employmentRows, costRows, signatures,
+      annualTotal: this.money(propAnn, ar),
+      backToForm: this.backToForm, doPrint: this.doPrint, sendForApproval: this.sendForApproval
+    };
+  }
+}
+</script>
+</body>
+</html>
